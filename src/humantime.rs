@@ -67,18 +67,15 @@ impl fmt::Display for HumanTime {
     }
 }
 
-impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
-    where TZ: chrono::TimeZone
-{
-    fn from(ts: chrono::DateTime<TZ>) -> Self {
+impl From<chrono::Duration> for HumanTime {
+    fn from(d: chrono::Duration) -> Self {
         use self::TimePeriod::*;
         use std::i64::{MIN, MAX};
 
-        let now = chrono::UTC::now().timestamp();
-        let diff = now - ts.timestamp();
+        let diff = d.num_seconds();
         let tense = match diff {
-            MIN...-10 => Tense::Future,
-            10...MAX => Tense::Past,
+            MIN...-10 => Tense::Past,
+            10...MAX => Tense::Future,
             _ => Tense::Present,
         };
 
@@ -102,5 +99,13 @@ impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
             period: diff,
             tense: tense,
         }
+    }
+}
+
+impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
+    where TZ: chrono::TimeZone
+{
+    fn from(dt: chrono::DateTime<TZ>) -> Self {
+        HumanTime::from(chrono::UTC::now() - dt.with_timezone(&chrono::UTC))
     }
 }
