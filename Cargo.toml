@@ -1,6 +1,6 @@
 [package]
 name = "chrono-humanize"
-version = "0.0.0"
+version = "0.0.2"
 description = "Human friendly time expressions - similar to Python arrow.humanize"
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
 keywords = ["humanize", "chrono", "time", "date", "arrow"]
