@@ -275,4 +275,158 @@ mod tests {
         let english = format!("{}", ht);
         assert_eq!("a day ago", english);
     }
+
+    #[test]
+    fn plus_1d() {
+        let ht = HumanTime::from(UTC::now() + Duration::days(1));
+        let english = format!("{}", ht);
+        assert_eq!("in a day", english);
+    }
+
+    #[test]
+    fn minus_1d() {
+        let ht = HumanTime::from(UTC::now() - Duration::days(1));
+        let english = format!("{}", ht);
+        assert_eq!("a day ago", english);
+    }
+
+    #[test]
+    fn plus_2d() {
+        let ht = HumanTime::from(UTC::now() + Duration::days(2));
+        let english = format!("{}", ht);
+        assert_eq!("in 2 days", english);
+    }
+
+    #[test]
+    fn minus_2d() {
+        let ht = HumanTime::from(UTC::now() - Duration::days(2));
+        let english = format!("{}", ht);
+        assert_eq!("2 days ago", english);
+    }
+
+    #[test]
+    fn plus_30d() {
+        let ht = HumanTime::from(UTC::now() + Duration::days(30));
+        let english = format!("{}", ht);
+        assert_eq!("in a month", english);
+    }
+
+    #[test]
+    fn minus_30d() {
+        let ht = HumanTime::from(UTC::now() - Duration::days(30));
+        let english = format!("{}", ht);
+        assert_eq!("a month ago", english);
+    }
+
+    #[test]
+    fn plus_45d() {
+        let ht = HumanTime::from(UTC::now() + Duration::days(45));
+        let english = format!("{}", ht);
+        assert_eq!("in a month", english);
+    }
+
+    #[test]
+    fn minus_45d() {
+        let ht = HumanTime::from(UTC::now() - Duration::days(45));
+        let english = format!("{}", ht);
+        assert_eq!("a month ago", english);
+    }
+
+    #[test]
+    fn plus_46d() {
+        let ht = HumanTime::from(UTC::now() + Duration::days(46));
+        let english = format!("{}", ht);
+        assert_eq!("in 2 months", english);
+    }
+
+    #[test]
+    fn minus_46d() {
+        let ht = HumanTime::from(UTC::now() - Duration::days(46));
+        let english = format!("{}", ht);
+        assert_eq!("2 months ago", english);
+    }
+
+    #[test]
+    fn plus_24w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(24));
+        let english = format!("{}", ht);
+        assert_eq!("in 5 months", english);
+    }
+
+    #[test]
+    fn minus_24w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(24));
+        let english = format!("{}", ht);
+        assert_eq!("5 months ago", english);
+    }
+
+    #[test]
+    fn plus_26w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(26));
+        let english = format!("{}", ht);
+        assert_eq!("in 6 months", english);
+    }
+
+    #[test]
+    fn minus_26w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(26));
+        let english = format!("{}", ht);
+        assert_eq!("6 months ago", english);
+    }
+
+    #[test]
+    fn plus_50w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(50));
+        let english = format!("{}", ht);
+        assert_eq!("in a year", english);
+    }
+
+    #[test]
+    fn minus_50w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(50));
+        let english = format!("{}", ht);
+        assert_eq!("a year ago", english);
+    }
+
+    #[test]
+    fn plus_100w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(100));
+        let english = format!("{}", ht);
+        assert_eq!("in 2 years", english);
+    }
+
+    #[test]
+    fn minus_100w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(100));
+        let english = format!("{}", ht);
+        assert_eq!("2 years ago", english);
+    }
+
+    #[test]
+    fn plus_120w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(120));
+        let english = format!("{}", ht);
+        assert_eq!("in 2 years", english);
+    }
+
+    #[test]
+    fn minus_120w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(120));
+        let english = format!("{}", ht);
+        assert_eq!("2 years ago", english);
+    }
+
+    #[test]
+    fn plus_200w() {
+        let ht = HumanTime::from(UTC::now() + Duration::weeks(200));
+        let english = format!("{}", ht);
+        assert_eq!("in 3 years", english);
+    }
+
+    #[test]
+    fn minus_200w() {
+        let ht = HumanTime::from(UTC::now() - Duration::weeks(200));
+        let english = format!("{}", ht);
+        assert_eq!("3 years ago", english);
+    }
 }
