@@ -348,16 +348,18 @@ mod local {
     }
 
     #[test]
-    fn plus_35d() {
-        let ht = HumanTime::from(Local::now() - Duration::days(35));
+    fn minus_35d() {
+        let past = Local::now() - Duration::days(35);
+        let ht = HumanTime::from(past);
         let english = format!("{}", ht);
-        assert_eq!("in a month", english);
+        assert_eq!("a month ago", english);
     }
 
     #[test]
-    fn minus_35d() {
-        let ht = HumanTime::from(Local::now() + Duration::days(35));
+    fn plus_35d() {
+        let future = Local::now() + Duration::days(35);
+        let ht = HumanTime::from(future);
         let english = format!("{}", ht);
-        assert_eq!("a month ago", english);
+        assert_eq!("in a month", english);
     }
 }

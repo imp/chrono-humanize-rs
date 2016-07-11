@@ -106,6 +106,6 @@ impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
     where TZ: chrono::TimeZone
 {
     fn from(dt: chrono::DateTime<TZ>) -> Self {
-        HumanTime::from(chrono::UTC::now() - dt.with_timezone(&chrono::UTC))
+        HumanTime::from(dt.with_timezone(&chrono::UTC) - chrono::UTC::now())
     }
 }
