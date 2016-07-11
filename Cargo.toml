@@ -1,9 +1,9 @@
 [package]
 name = "chrono-humanize"
 version = "0.0.0"
-description = "Human friendly time expressions"
+description = "Human friendly time expressions - similar to Python arrow.humanize"
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
-keywords = ["humanize", "chrono", "time", "date", "python", "arrow"]
+keywords = ["humanize", "chrono", "time", "date", "arrow"]
 repository = "https://gitlab.com/imp/chrono-humanize-rs.git"
 homepage = "https://gitlab.com/imp/chrono-humanize-rs"
 license = "MIT/Apache-2.0"
