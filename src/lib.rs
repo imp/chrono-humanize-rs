@@ -72,7 +72,9 @@ impl fmt::Display for HumanTime {
     }
 }
 
-impl<TZ> From<chrono::DateTime<TZ>> for HumanTime where TZ: chrono::TimeZone {
+impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
+    where TZ: chrono::TimeZone
+{
     fn from(ts: chrono::DateTime<TZ>) -> Self {
         use TimePeriod::*;
         use std::i64::{MIN, MAX};
@@ -101,7 +103,10 @@ impl<TZ> From<chrono::DateTime<TZ>> for HumanTime where TZ: chrono::TimeZone {
             _ => Eternity,
         };
 
-        HumanTime { period: diff, tense: tense }
+        HumanTime {
+            period: diff,
+            tense: tense,
+        }
     }
 }
 
