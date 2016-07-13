@@ -31,18 +31,19 @@ enum Tense {
 pub struct HumanTime(chrono::Duration);
 
 impl HumanTime {
-    fn period(&self) -> (TimePeriod, Tense) {
+    fn humanize(&self, presize: bool) -> (Vec<TimePeriod>, Tense) {
+        if presize {
+            (vec![], Tense::Present)
+        } else {
+            (vec![], Tense::Present)
+        }
+    }
+
+    fn period1(duration: chrono::Duration) -> TimePeriod {
         use self::TimePeriod::*;
-        use std::i64::{MIN, MAX};
+        use std::i64::MAX;
 
-        let period = self.0.num_seconds();
-        let tense = match period {
-            MIN...-10 => Tense::Past,
-            10...MAX => Tense::Future,
-            _ => Tense::Present,
-        };
-
-        let period = match period.abs() {
+        match duration.num_seconds().abs() {
             0...10 => Now,
             n @ 11...44 => Seconds(n),
             45...90 => Minute,
@@ -56,7 +57,19 @@ impl HumanTime {
             29808000...47260800 => Year,
             n @ 47260800...MAX => Years(max(n / 31536000, 2)),
             _ => Eternity,
+        }
+    }
+
+    fn period(&self) -> (TimePeriod, Tense) {
+        use std::i64::{MIN, MAX};
+
+        let tense = match self.0.num_seconds() {
+            MIN...-10 => Tense::Past,
+            10...MAX => Tense::Future,
+            _ => Tense::Present,
         };
+
+        let period = HumanTime::period1(self.0);
 
         (period, tense)
     }
