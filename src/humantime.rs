@@ -28,58 +28,21 @@ enum Tense {
 }
 
 #[derive(Debug)]
-pub struct HumanTime {
-    period: TimePeriod,
-    tense: Tense,
-}
+pub struct HumanTime(chrono::Duration);
 
 impl HumanTime {
-    fn locale_en(&self) -> String {
-        use self::TimePeriod::*;
-
-        let time = match self.period {
-            Now => String::from("now"),
-            Seconds(n) => format!("{} seconds", n),
-            Minute => String::from("a minute"),
-            Minutes(n) => format!("{} minutes", n),
-            Hour => String::from("an hour"),
-            Hours(n) => format!("{} hours", n),
-            Day => String::from("a day"),
-            Days(n) => format!("{} days", n),
-            Month => String::from("a month"),
-            Months(n) => format!("{} months", n),
-            Year => String::from("a year"),
-            Years(n) => format!("{} years", n),
-            Eternity => String::from("eternity"),
-        };
-
-        match self.tense {
-            Tense::Past => format!("{} ago", time),
-            Tense::Future => format!("in {}", time),
-            Tense::Present => time,
-        }
-    }
-}
-
-impl fmt::Display for HumanTime {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.pad(&self.locale_en())
-    }
-}
-
-impl From<chrono::Duration> for HumanTime {
-    fn from(d: chrono::Duration) -> Self {
+    fn period(&self) -> (TimePeriod, Tense) {
         use self::TimePeriod::*;
         use std::i64::{MIN, MAX};
 
-        let diff = d.num_seconds();
-        let tense = match diff {
+        let period = self.0.num_seconds();
+        let tense = match period {
             MIN...-10 => Tense::Past,
             10...MAX => Tense::Future,
             _ => Tense::Present,
         };
 
-        let diff = match diff.abs() {
+        let period = match period.abs() {
             0...10 => Now,
             n @ 11...44 => Seconds(n),
             45...90 => Minute,
@@ -95,10 +58,45 @@ impl From<chrono::Duration> for HumanTime {
             _ => Eternity,
         };
 
-        HumanTime {
-            period: diff,
-            tense: tense,
+        (period, tense)
+    }
+
+    fn locale_en(&self) -> String {
+        use self::TimePeriod::*;
+        let (period, tense) = self.period();
+        let time = match period {
+            Now => String::from("now"),
+            Seconds(n) => format!("{} seconds", n),
+            Minute => String::from("a minute"),
+            Minutes(n) => format!("{} minutes", n),
+            Hour => String::from("an hour"),
+            Hours(n) => format!("{} hours", n),
+            Day => String::from("a day"),
+            Days(n) => format!("{} days", n),
+            Month => String::from("a month"),
+            Months(n) => format!("{} months", n),
+            Year => String::from("a year"),
+            Years(n) => format!("{} years", n),
+            Eternity => String::from("eternity"),
+        };
+
+        match tense {
+            Tense::Past => format!("{} ago", time),
+            Tense::Future => format!("in {}", time),
+            Tense::Present => time,
         }
+    }
+}
+
+impl fmt::Display for HumanTime {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        f.pad(&self.locale_en())
+    }
+}
+
+impl From<chrono::Duration> for HumanTime {
+    fn from(duration: chrono::Duration) -> Self {
+        HumanTime(duration)
     }
 }
 
