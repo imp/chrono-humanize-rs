@@ -7,19 +7,42 @@ use chrono;
 enum TimePeriod {
     Now,
     Seconds(i64),
-    Minute,
+    // Minute,
     Minutes(i64),
-    Hour,
+    // Hour,
     Hours(i64),
-    Day,
+    // Day,
     Days(i64),
-    Week,
+    // Week,
     Weeks(i64),
-    Month,
+    // Month,
     Months(i64),
-    Year,
+    // Year,
     Years(i64),
     Eternity,
+}
+
+impl From<TimePeriod> for String {
+    fn from(period: TimePeriod) -> String {
+        use self::TimePeriod::*;
+        match period {
+            Now => String::from("now"),
+            Seconds(n) => format!("{} seconds", n),
+            Minutes(1) => String::from("a minute"),
+            Minutes(n) => format!("{} minutes", n),
+            Hours(1) => String::from("an hour"),
+            Hours(n) => format!("{} hours", n),
+            Days(1) => String::from("a day"),
+            Days(n) => format!("{} days", n),
+            Weeks(1) => String::from("a week"),
+            Weeks(n) => format!("{} weeks", n),
+            Months(1) => String::from("a month"),
+            Months(n) => format!("{} months", n),
+            Years(1) => String::from("a year"),
+            Years(n) => format!("{} years", n),
+            Eternity => String::from("eternity"),
+        }
+    }
 }
 
 #[derive(Debug)]
@@ -34,70 +57,58 @@ pub struct HumanTime(chrono::Duration);
 
 impl HumanTime {
     fn humanize(&self, presize: bool) -> (Vec<TimePeriod>, Tense) {
-        if presize {
-            (vec![], Tense::Present)
+        // use std::i64::{MIN, MAX};
+        //
+        // let tense = match self.0.num_seconds() {
+        //     MIN...-10 => Tense::Past,
+        //     10...MAX => Tense::Future,
+        //     _ => Tense::Present,
+        // };
+        let tense = if self.0 < chrono::Duration::seconds(-10) {
+            Tense::Past
+        } else if self.0 < chrono::Duration::seconds(10) {
+            Tense::Present
         } else {
-            (vec![], Tense::Present)
+            Tense::Future
+        };
+
+        if presize {
+            (vec![], tense)
+        } else {
+            let period = HumanTime::rough_period(self.0);
+            (vec![period], tense)
         }
     }
 
-    fn period1(duration: chrono::Duration) -> TimePeriod {
+    fn rough_period(duration: chrono::Duration) -> TimePeriod {
         use self::TimePeriod::*;
         use std::i64::MAX;
 
         match duration.num_seconds().abs() {
             0...10 => Now,
             n @ 11...44 => Seconds(n),
-            45...90 => Minute,
+            45...90 => Minutes(1),
             n @ 91...2700 => Minutes(max(n / 60, 2)),
-            2700...5400 => Hour,
+            2700...5400 => Hours(1),
             n @ 5400...79200 => Hours(max(n / 3600, 2)),
-            79200...129600 => Day,
+            79200...129600 => Days(1),
             n @ 129600...561600 => Days(max(n / 86400, 2)),
-            561600...907200 => Week,
+            561600...907200 => Weeks(1),
             n @ 907200...2505600 => Weeks(max(n / 604800, 2)),
-            2505600...3888000 => Month,
+            2505600...3888000 => Months(1),
             n @ 3888000...29808000 => Months(max(n / 2592000, 2)),
-            29808000...47260800 => Year,
+            29808000...47260800 => Years(1),
             n @ 47260800...MAX => Years(max(n / 31536000, 2)),
             _ => Eternity,
         }
     }
 
-    fn period(&self) -> (TimePeriod, Tense) {
-        use std::i64::{MIN, MAX};
-
-        let tense = match self.0.num_seconds() {
-            MIN...-10 => Tense::Past,
-            10...MAX => Tense::Future,
-            _ => Tense::Present,
-        };
-
-        let period = HumanTime::period1(self.0);
-
-        (period, tense)
-    }
-
-    fn locale_en(&self) -> String {
-        use self::TimePeriod::*;
-        let (period, tense) = self.period();
-        let time = match period {
-            Now => String::from("now"),
-            Seconds(n) => format!("{} seconds", n),
-            Minute => String::from("a minute"),
-            Minutes(n) => format!("{} minutes", n),
-            Hour => String::from("an hour"),
-            Hours(n) => format!("{} hours", n),
-            Day => String::from("a day"),
-            Days(n) => format!("{} days", n),
-            Week => String::from("a week"),
-            Weeks(n) => format!("{} weeks", n),
-            Month => String::from("a month"),
-            Months(n) => format!("{} months", n),
-            Year => String::from("a year"),
-            Years(n) => format!("{} years", n),
-            Eternity => String::from("eternity"),
-        };
+    fn locale_en(&self, presize: bool) -> String {
+        let (periods, tense) = self.humanize(presize);
+        let mut time = String::new();
+        for period in periods {
+            time = time + &String::from(period)
+        }
 
         match tense {
             Tense::Past => format!("{} ago", time),
@@ -109,7 +120,8 @@ impl HumanTime {
 
 impl fmt::Display for HumanTime {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        f.pad(&self.locale_en())
+        let precise = f.alternate();
+        f.pad(&self.locale_en(precise))
     }
 }
 

@@ -7,7 +7,7 @@ mod duration {
     use chrono_humanize::HumanTime;
 
     #[test]
-    fn zero() {
+    fn now() {
         let ht = HumanTime::from(Duration::zero());
         let english = format!("{}", ht);
         assert_eq!("now", english);
