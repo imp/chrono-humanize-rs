@@ -196,6 +196,76 @@ mod duration {
     }
 
     #[test]
+    fn plus_6d_13d() {
+        let ht = HumanTime::from(Duration::days(6) + Duration::hours(13));
+        let english = format!("{}", ht);
+        assert_eq!("in a week", english);
+    }
+
+    #[test]
+    fn minus_6d_13h() {
+        let ht = HumanTime::from(Duration::days(-7) + Duration::hours(-13));
+        let english = format!("{}", ht);
+        assert_eq!("a week ago", english);
+    }
+
+    #[test]
+    fn plus_7d() {
+        let ht = HumanTime::from(Duration::days(7));
+        let english = format!("{}", ht);
+        assert_eq!("in a week", english);
+    }
+
+    #[test]
+    fn minus_7d() {
+        let ht = HumanTime::from(Duration::days(-7));
+        let english = format!("{}", ht);
+        assert_eq!("a week ago", english);
+    }
+
+    #[test]
+    fn plus_10d() {
+        let ht = HumanTime::from(Duration::days(10));
+        let english = format!("{}", ht);
+        assert_eq!("in a week", english);
+    }
+
+    #[test]
+    fn minus_10d() {
+        let ht = HumanTime::from(Duration::days(-10));
+        let english = format!("{}", ht);
+        assert_eq!("a week ago", english);
+    }
+
+    #[test]
+    fn plus_11d() {
+        let ht = HumanTime::from(Duration::days(11));
+        let english = format!("{}", ht);
+        assert_eq!("in 2 weeks", english);
+    }
+
+    #[test]
+    fn minus_11d() {
+        let ht = HumanTime::from(Duration::days(-11));
+        let english = format!("{}", ht);
+        assert_eq!("2 weeks ago", english);
+    }
+
+    #[test]
+    fn plus_4w() {
+        let ht = HumanTime::from(Duration::weeks(4));
+        let english = format!("{}", ht);
+        assert_eq!("in 4 weeks", english);
+    }
+
+    #[test]
+    fn minus_4w() {
+        let ht = HumanTime::from(Duration::weeks(-4));
+        let english = format!("{}", ht);
+        assert_eq!("4 weeks ago", english);
+    }
+
+    #[test]
     fn plus_30d() {
         let ht = HumanTime::from(Duration::days(30));
         let english = format!("{}", ht);
