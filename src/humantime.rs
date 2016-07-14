@@ -164,7 +164,7 @@ impl HumanTime {
         let (mut periods, tense) = self.humanize(precise);
         let mut time = String::from(periods.remove(0));
         for period in periods {
-            time = time + " " + &String::from(period)
+            time = time + ", " + &String::from(period)
         }
 
         match tense {
