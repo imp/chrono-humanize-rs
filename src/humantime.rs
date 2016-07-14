@@ -123,32 +123,32 @@ impl HumanTime {
         let mut duration = duration.num_seconds().abs();
         let mut periods = Vec::<TimePeriod>::new();
 
-        if duration > year {
+        if duration >= year {
             periods.push(Years(duration / year));
             duration %= year;
         }
 
-        if duration > month {
+        if duration >= month {
             periods.push(Months(duration / month));
             duration %= month;
         }
 
-        if duration > week {
+        if duration >= week {
             periods.push(Weeks(duration / week));
             duration %= week;
         }
 
-        if duration > day {
+        if duration >= day {
             periods.push(Days(duration / day));
             duration %= day;
         }
 
-        if duration > hour {
+        if duration >= hour {
             periods.push(Hours(duration / hour));
             duration %= hour;
         }
 
-        if duration > minute {
+        if duration >= minute {
             periods.push(Minutes(duration / minute));
             duration %= minute;
         }
