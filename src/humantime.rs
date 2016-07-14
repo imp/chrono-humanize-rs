@@ -56,7 +56,7 @@ enum Tense {
 pub struct HumanTime(chrono::Duration);
 
 impl HumanTime {
-    fn humanize(&self, presize: bool) -> (Vec<TimePeriod>, Tense) {
+    fn humanize(&self, precise: bool) -> (Vec<TimePeriod>, Tense) {
         // use std::i64::{MIN, MAX};
         //
         // let tense = match self.0.num_seconds() {
@@ -72,7 +72,7 @@ impl HumanTime {
             Tense::Future
         };
 
-        if presize {
+        if precise {
             (vec![], tense)
         } else {
             let period = HumanTime::rough_period(self.0);
@@ -103,8 +103,8 @@ impl HumanTime {
         }
     }
 
-    fn locale_en(&self, presize: bool) -> String {
-        let (periods, tense) = self.humanize(presize);
+    fn locale_en(&self, precise: bool) -> String {
+        let (periods, tense) = self.humanize(precise);
         let mut time = String::new();
         for period in periods {
             time = time + &String::from(period)
