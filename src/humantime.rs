@@ -161,10 +161,10 @@ impl HumanTime {
     }
 
     fn locale_en(&self, precise: bool) -> String {
-        let (periods, tense) = self.humanize(precise);
-        let mut time = String::new();
+        let (mut periods, tense) = self.humanize(precise);
+        let mut time = String::from(periods.remove(0));
         for period in periods {
-            time = time + &String::from(period)
+            time = time + " " + &String::from(period)
         }
 
         match tense {
