@@ -7,17 +7,11 @@ use chrono;
 enum TimePeriod {
     Now,
     Seconds(i64),
-    // Minute,
     Minutes(i64),
-    // Hour,
     Hours(i64),
-    // Day,
     Days(i64),
-    // Week,
     Weeks(i64),
-    // Month,
     Months(i64),
-    // Year,
     Years(i64),
     Eternity,
 }
