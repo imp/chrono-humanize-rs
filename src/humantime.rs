@@ -118,6 +118,7 @@ impl HumanTime {
         let day = Duration::days(1).num_seconds();
         let hour = Duration::hours(1).num_seconds();
         let minute = Duration::minutes(1).num_seconds();
+        let zero = Duration::zero().num_seconds();
 
         let mut duration = duration.num_seconds().abs();
         let mut periods = Vec::<TimePeriod>::new();
@@ -143,16 +144,18 @@ impl HumanTime {
         }
 
         if duration > hour {
-            periods.push(Days(duration / hour));
+            periods.push(Hours(duration / hour));
             duration %= hour;
         }
 
         if duration > minute {
-            periods.push(Days(duration / minute));
+            periods.push(Minutes(duration / minute));
             duration %= minute;
         }
 
-        periods.push(Seconds(duration));
+        if duration > zero || periods.is_empty() {
+            periods.push(Seconds(duration));
+        }
 
         periods
     }
