@@ -1,7 +1,7 @@
 use std::fmt;
 use std::convert::From;
 use std::cmp::max;
-use chrono;
+use chrono::{DateTime, Duration, TimeZone, UTC};
 
 #[derive(Debug)]
 enum TimePeriod {
@@ -47,7 +47,7 @@ enum Tense {
 }
 
 #[derive(Debug)]
-pub struct HumanTime(chrono::Duration);
+pub struct HumanTime(Duration);
 
 impl HumanTime {
     fn humanize(&self, precise: bool) -> (Vec<TimePeriod>, Tense) {
@@ -58,9 +58,9 @@ impl HumanTime {
         //     10...MAX => Tense::Future,
         //     _ => Tense::Present,
         // };
-        let tense = if self.0 < chrono::Duration::seconds(-10) {
+        let tense = if self.0 < Duration::seconds(-10) {
             Tense::Past
-        } else if self.0 < chrono::Duration::seconds(10) {
+        } else if self.0 < Duration::seconds(10) {
             Tense::Present
         } else {
             Tense::Future
@@ -74,7 +74,7 @@ impl HumanTime {
         }
     }
 
-    fn rough_period(duration: chrono::Duration) -> TimePeriod {
+    fn rough_period(duration: Duration) -> TimePeriod {
         use self::TimePeriod::*;
         use std::i64::MAX;
 
@@ -95,6 +95,10 @@ impl HumanTime {
             n @ 47260800...MAX => Years(max(n / 31536000, 2)),
             _ => Eternity,
         }
+    }
+
+    fn precise_period(duration: Duration) {
+
     }
 
     fn locale_en(&self, precise: bool) -> String {
@@ -119,16 +123,16 @@ impl fmt::Display for HumanTime {
     }
 }
 
-impl From<chrono::Duration> for HumanTime {
-    fn from(duration: chrono::Duration) -> Self {
+impl From<Duration> for HumanTime {
+    fn from(duration: Duration) -> Self {
         HumanTime(duration)
     }
 }
 
-impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
-    where TZ: chrono::TimeZone
+impl<TZ> From<DateTime<TZ>> for HumanTime
+    where TZ: TimeZone
 {
-    fn from(dt: chrono::DateTime<TZ>) -> Self {
-        HumanTime::from(dt.with_timezone(&chrono::UTC) - chrono::UTC::now())
+    fn from(dt: DateTime<TZ>) -> Self {
+        HumanTime::from(dt.with_timezone(&UTC) - UTC::now())
     }
 }
