@@ -51,27 +51,21 @@ pub struct HumanTime(Duration);
 
 impl HumanTime {
     fn humanize(&self, precise: bool) -> (Vec<TimePeriod>, Tense) {
-        // use std::i64::{MIN, MAX};
-        //
-        // let tense = match self.0.num_seconds() {
-        //     MIN...-10 => Tense::Past,
-        //     10...MAX => Tense::Future,
-        //     _ => Tense::Present,
-        // };
-        let tense = if self.0 < Duration::seconds(-10) {
-            Tense::Past
-        } else if self.0 < Duration::seconds(10) {
-            Tense::Present
-        } else {
-            Tense::Future
+        use std::i64::{MIN, MAX};
+
+        let tense = match self.0.num_seconds() {
+            -10...10 if !precise => Tense::Present,
+            MIN...-1 => Tense::Past,
+            1...MAX => Tense::Future,
+            _ => Tense::Present,
         };
 
-        if precise {
-            (vec![], tense)
+        let periods = if precise {
+            HumanTime::precise_period(self.0)
         } else {
-            let period = HumanTime::rough_period(self.0);
-            (vec![period], tense)
-        }
+            vec![HumanTime::rough_period(self.0)]
+        };
+        (periods, tense)
     }
 
     fn rough_period(duration: Duration) -> TimePeriod {
@@ -97,8 +91,52 @@ impl HumanTime {
         }
     }
 
-    fn precise_period(duration: Duration) {
+    fn precise_period(duration: Duration) -> Vec<TimePeriod> {
+        use self::TimePeriod::*;
 
+        let year = Duration::days(365).num_seconds();
+        let month = Duration::days(30).num_seconds();
+        let week = Duration::weeks(1).num_seconds();
+        let day = Duration::days(1).num_seconds();
+        let hour = Duration::hours(1).num_seconds();
+        let minute = Duration::minutes(1).num_seconds();
+
+        let mut duration = duration.num_seconds().abs();
+        let mut periods = Vec::<TimePeriod>::new();
+
+        if duration > year {
+            periods.push(Years(duration / year));
+            duration %= year;
+        }
+
+        if duration > month {
+            periods.push(Months(duration / month));
+            duration %= month;
+        }
+
+        if duration > week {
+            periods.push(Weeks(duration / week));
+            duration %= week;
+        }
+
+        if duration > day {
+            periods.push(Days(duration / day));
+            duration %= day;
+        }
+
+        if duration > hour {
+            periods.push(Days(duration / hour));
+            duration %= hour;
+        }
+
+        if duration > minute {
+            periods.push(Days(duration / minute));
+            duration %= minute;
+        }
+
+        periods.push(Seconds(duration));
+
+        periods
     }
 
     fn locale_en(&self, precise: bool) -> String {
