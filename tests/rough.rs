@@ -196,7 +196,7 @@ mod duration {
     }
 
     #[test]
-    fn plus_6d_13d() {
+    fn plus_6d_13h() {
         let ht = HumanTime::from(Duration::days(6) + Duration::hours(13));
         let english = format!("{}", ht);
         assert_eq!("in a week", english);
