@@ -204,7 +204,7 @@ mod duration {
 
     #[test]
     fn minus_6d_13h() {
-        let ht = HumanTime::from(Duration::days(-7) + Duration::hours(-13));
+        let ht = HumanTime::from(Duration::days(-6) + Duration::hours(-13));
         let english = format!("{}", ht);
         assert_eq!("a week ago", english);
     }
