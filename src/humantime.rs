@@ -132,11 +132,3 @@ impl<TZ> From<chrono::DateTime<TZ>> for HumanTime
         HumanTime::from(dt.with_timezone(&chrono::UTC) - chrono::UTC::now())
     }
 }
-
-// impl<T> From<T> for HumanTime
-//     where T: chrono::Datelike + chrono::Timelike
-// {
-//     fn from(dt: T) -> Self {
-//         HumanTime::from(chrono::UTC::now() - dt.with_timezone(&chrono::UTC))
-//     }
-// }
