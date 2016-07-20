@@ -45,28 +45,28 @@ mod duration {
     fn plus_95s() {
         let ht = HumanTime::from(Duration::seconds(95));
         let english = format!("{:#}", ht);
-        assert_eq!("in a minute, 35 seconds", english);
+        assert_eq!("in a minute and 35 seconds", english);
     }
 
     #[test]
     fn minus_95s() {
         let ht = HumanTime::from(Duration::seconds(-95));
         let english = format!("{:#}", ht);
-        assert_eq!("a minute, 35 seconds ago", english);
+        assert_eq!("a minute and 35 seconds ago", english);
     }
 
     #[test]
     fn plus_125s() {
         let ht = HumanTime::from(Duration::seconds(125));
         let english = format!("{:#}", ht);
-        assert_eq!("in 2 minutes, 5 seconds", english);
+        assert_eq!("in 2 minutes and 5 seconds", english);
     }
 
     #[test]
     fn minus_125s() {
         let ht = HumanTime::from(Duration::seconds(-125));
         let english = format!("{:#}", ht);
-        assert_eq!("2 minutes, 5 seconds ago", english);
+        assert_eq!("2 minutes and 5 seconds ago", english);
     }
 
     #[test]
@@ -129,14 +129,14 @@ mod duration {
     fn plus_72m() {
         let ht = HumanTime::from(Duration::minutes(72));
         let english = format!("{:#}", ht);
-        assert_eq!("in an hour, 12 minutes", english);
+        assert_eq!("in an hour and 12 minutes", english);
     }
 
     #[test]
     fn minus_72m() {
         let ht = HumanTime::from(Duration::minutes(-72));
         let english = format!("{:#}", ht);
-        assert_eq!("an hour, 12 minutes ago", english);
+        assert_eq!("an hour and 12 minutes ago", english);
     }
 
     #[test]
@@ -171,14 +171,14 @@ mod duration {
     fn plus_26h() {
         let ht = HumanTime::from(Duration::hours(26));
         let english = format!("{:#}", ht);
-        assert_eq!("in a day, 2 hours", english);
+        assert_eq!("in a day and 2 hours", english);
     }
 
     #[test]
     fn minus_26h() {
         let ht = HumanTime::from(Duration::hours(-26));
         let english = format!("{:#}", ht);
-        assert_eq!("a day, 2 hours ago", english);
+        assert_eq!("a day and 2 hours ago", english);
     }
 
     #[test]
@@ -213,14 +213,14 @@ mod duration {
     fn plus_6d_13h() {
         let ht = HumanTime::from(Duration::days(6) + Duration::hours(13));
         let english = format!("{:#}", ht);
-        assert_eq!("in 6 days, 13 hours", english);
+        assert_eq!("in 6 days and 13 hours", english);
     }
 
     #[test]
     fn minus_6d_13h() {
         let ht = HumanTime::from(Duration::days(-6) + Duration::hours(-13));
         let english = format!("{:#}", ht);
-        assert_eq!("6 days, 13 hours ago", english);
+        assert_eq!("6 days and 13 hours ago", english);
     }
 
     #[test]
@@ -241,28 +241,28 @@ mod duration {
     fn plus_10d() {
         let ht = HumanTime::from(Duration::days(10));
         let english = format!("{:#}", ht);
-        assert_eq!("in a week, 3 days", english);
+        assert_eq!("in a week and 3 days", english);
     }
 
     #[test]
     fn minus_10d() {
         let ht = HumanTime::from(Duration::days(-10));
         let english = format!("{:#}", ht);
-        assert_eq!("a week, 3 days ago", english);
+        assert_eq!("a week and 3 days ago", english);
     }
 
     #[test]
     fn plus_11d() {
         let ht = HumanTime::from(Duration::days(11));
         let english = format!("{:#}", ht);
-        assert_eq!("in a week, 4 days", english);
+        assert_eq!("in a week and 4 days", english);
     }
 
     #[test]
     fn minus_11d() {
         let ht = HumanTime::from(Duration::days(-11));
         let english = format!("{:#}", ht);
-        assert_eq!("a week, 4 days ago", english);
+        assert_eq!("a week and 4 days ago", english);
     }
 
     #[test]
@@ -297,112 +297,112 @@ mod duration {
     fn plus_45d() {
         let ht = HumanTime::from(Duration::days(45));
         let english = format!("{:#}", ht);
-        assert_eq!("in a month, 2 weeks, a day", english);
+        assert_eq!("in a month, 2 weeks and a day", english);
     }
 
     #[test]
     fn minus_45d() {
         let ht = HumanTime::from(Duration::days(-45));
         let english = format!("{:#}", ht);
-        assert_eq!("a month, 2 weeks, a day ago", english);
+        assert_eq!("a month, 2 weeks and a day ago", english);
     }
 
     #[test]
     fn plus_46d() {
         let ht = HumanTime::from(Duration::days(46));
         let english = format!("{:#}", ht);
-        assert_eq!("in a month, 2 weeks, 2 days", english);
+        assert_eq!("in a month, 2 weeks and 2 days", english);
     }
 
     #[test]
     fn minus_46d() {
         let ht = HumanTime::from(Duration::days(-46));
         let english = format!("{:#}", ht);
-        assert_eq!("a month, 2 weeks, 2 days ago", english);
+        assert_eq!("a month, 2 weeks and 2 days ago", english);
     }
 
     #[test]
     fn plus_24w() {
         let ht = HumanTime::from(Duration::weeks(24));
         let english = format!("{:#}", ht);
-        assert_eq!("in 5 months, 2 weeks, 4 days", english);
+        assert_eq!("in 5 months, 2 weeks and 4 days", english);
     }
 
     #[test]
     fn minus_24w() {
         let ht = HumanTime::from(Duration::weeks(-24));
         let english = format!("{:#}", ht);
-        assert_eq!("5 months, 2 weeks, 4 days ago", english);
+        assert_eq!("5 months, 2 weeks and 4 days ago", english);
     }
 
     #[test]
     fn plus_26w() {
         let ht = HumanTime::from(Duration::weeks(26));
         let english = format!("{:#}", ht);
-        assert_eq!("in 6 months, 2 days", english);
+        assert_eq!("in 6 months and 2 days", english);
     }
 
     #[test]
     fn minus_26w() {
         let ht = HumanTime::from(Duration::weeks(-26));
         let english = format!("{:#}", ht);
-        assert_eq!("6 months, 2 days ago", english);
+        assert_eq!("6 months and 2 days ago", english);
     }
 
     #[test]
     fn plus_50w() {
         let ht = HumanTime::from(Duration::weeks(50));
         let english = format!("{:#}", ht);
-        assert_eq!("in 11 months, 2 weeks, 6 days", english);
+        assert_eq!("in 11 months, 2 weeks and 6 days", english);
     }
 
     #[test]
     fn minus_50w() {
         let ht = HumanTime::from(Duration::weeks(-50));
         let english = format!("{:#}", ht);
-        assert_eq!("11 months, 2 weeks, 6 days ago", english);
+        assert_eq!("11 months, 2 weeks and 6 days ago", english);
     }
 
     #[test]
     fn plus_100w() {
         let ht = HumanTime::from(Duration::weeks(100));
         let english = format!("{:#}", ht);
-        assert_eq!("in a year, 11 months, 5 days", english);
+        assert_eq!("in a year, 11 months and 5 days", english);
     }
 
     #[test]
     fn minus_100w() {
         let ht = HumanTime::from(Duration::weeks(-100));
         let english = format!("{:#}", ht);
-        assert_eq!("a year, 11 months, 5 days ago", english);
+        assert_eq!("a year, 11 months and 5 days ago", english);
     }
 
     #[test]
     fn plus_120w() {
         let ht = HumanTime::from(Duration::weeks(120));
         let english = format!("{:#}", ht);
-        assert_eq!("in 2 years, 3 months, 2 weeks, 6 days", english);
+        assert_eq!("in 2 years, 3 months, 2 weeks and 6 days", english);
     }
 
     #[test]
     fn minus_120w() {
         let ht = HumanTime::from(Duration::weeks(-120));
         let english = format!("{:#}", ht);
-        assert_eq!("2 years, 3 months, 2 weeks, 6 days ago", english);
+        assert_eq!("2 years, 3 months, 2 weeks and 6 days ago", english);
     }
 
     #[test]
     fn plus_200w() {
         let ht = HumanTime::from(Duration::weeks(200));
         let english = format!("{:#}", ht);
-        assert_eq!("in 3 years, 10 months, 5 days", english);
+        assert_eq!("in 3 years, 10 months and 5 days", english);
     }
 
     #[test]
     fn minus_200w() {
         let ht = HumanTime::from(Duration::weeks(-200));
         let english = format!("{:#}", ht);
-        assert_eq!("3 years, 10 months, 5 days ago", english);
+        assert_eq!("3 years, 10 months and 5 days ago", english);
     }
 }
 

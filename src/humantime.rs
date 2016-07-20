@@ -163,8 +163,13 @@ impl HumanTime {
     fn locale_en(&self, precise: bool) -> String {
         let (mut periods, tense) = self.humanize(precise);
         let mut time = String::from(periods.remove(0));
+        let last = periods.pop().map(String::from);
         for period in periods {
             time = time + ", " + &String::from(period)
+        }
+
+        if let Some(last) = last {
+            time = time + " and " + &last;
         }
 
         match tense {
