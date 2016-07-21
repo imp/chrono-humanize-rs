@@ -16,10 +16,31 @@ enum TimePeriod {
     Eternity,
 }
 
-impl From<TimePeriod> for String {
-    fn from(period: TimePeriod) -> String {
+impl TimePeriod {
+    fn to_string_precise(&self) -> String {
         use self::TimePeriod::*;
-        match period {
+        match *self {
+            Now => String::from("now"),
+            Seconds(n) => format!("{} seconds", n),
+            Minutes(1) => String::from("1 minute"),
+            Minutes(n) => format!("{} minutes", n),
+            Hours(1) => String::from("1 hour"),
+            Hours(n) => format!("{} hours", n),
+            Days(1) => String::from("1 day"),
+            Days(n) => format!("{} days", n),
+            Weeks(1) => String::from("1 week"),
+            Weeks(n) => format!("{} weeks", n),
+            Months(1) => String::from("1 month"),
+            Months(n) => format!("{} months", n),
+            Years(1) => String::from("1 year"),
+            Years(n) => format!("{} years", n),
+            Eternity => String::from("eternity"),
+        }
+    }
+
+    fn to_string_rough(&self) -> String {
+        use self::TimePeriod::*;
+        match *self {
             Now => String::from("now"),
             Seconds(n) => format!("{} seconds", n),
             Minutes(1) => String::from("a minute"),
@@ -35,6 +56,14 @@ impl From<TimePeriod> for String {
             Years(1) => String::from("a year"),
             Years(n) => format!("{} years", n),
             Eternity => String::from("eternity"),
+        }
+    }
+
+    pub fn to_string(&self, precise: bool) -> String {
+        if precise {
+            self.to_string_precise()
+        } else {
+            self.to_string_rough()
         }
     }
 }
@@ -162,10 +191,10 @@ impl HumanTime {
 
     fn locale_en(&self, precise: bool) -> String {
         let (mut periods, tense) = self.humanize(precise);
-        let mut time = String::from(periods.remove(0));
-        let last = periods.pop().map(String::from);
+        let mut time = periods.remove(0).to_string(precise);
+        let last = periods.pop().map(|p| p.to_string(precise));
         for period in periods {
-            time = time + ", " + &String::from(period)
+            time = time + ", " + &period.to_string(precise);
         }
 
         if let Some(last) = last {

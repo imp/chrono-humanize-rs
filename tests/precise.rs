@@ -45,14 +45,14 @@ mod duration {
     fn plus_95s() {
         let ht = HumanTime::from(Duration::seconds(95));
         let english = format!("{:#}", ht);
-        assert_eq!("in a minute and 35 seconds", english);
+        assert_eq!("in 1 minute and 35 seconds", english);
     }
 
     #[test]
     fn minus_95s() {
         let ht = HumanTime::from(Duration::seconds(-95));
         let english = format!("{:#}", ht);
-        assert_eq!("a minute and 35 seconds ago", english);
+        assert_eq!("1 minute and 35 seconds ago", english);
     }
 
     #[test]
@@ -115,28 +115,28 @@ mod duration {
     fn plus_1h() {
         let ht = HumanTime::from(Duration::hours(1));
         let english = format!("{:#}", ht);
-        assert_eq!("in an hour", english);
+        assert_eq!("in 1 hour", english);
     }
 
     #[test]
     fn minus_1h() {
         let ht = HumanTime::from(Duration::hours(-1));
         let english = format!("{:#}", ht);
-        assert_eq!("an hour ago", english);
+        assert_eq!("1 hour ago", english);
     }
 
     #[test]
     fn plus_72m() {
         let ht = HumanTime::from(Duration::minutes(72));
         let english = format!("{:#}", ht);
-        assert_eq!("in an hour and 12 minutes", english);
+        assert_eq!("in 1 hour and 12 minutes", english);
     }
 
     #[test]
     fn minus_72m() {
         let ht = HumanTime::from(Duration::minutes(-72));
         let english = format!("{:#}", ht);
-        assert_eq!("an hour and 12 minutes ago", english);
+        assert_eq!("1 hour and 12 minutes ago", english);
     }
 
     #[test]
@@ -171,28 +171,28 @@ mod duration {
     fn plus_26h() {
         let ht = HumanTime::from(Duration::hours(26));
         let english = format!("{:#}", ht);
-        assert_eq!("in a day and 2 hours", english);
+        assert_eq!("in 1 day and 2 hours", english);
     }
 
     #[test]
     fn minus_26h() {
         let ht = HumanTime::from(Duration::hours(-26));
         let english = format!("{:#}", ht);
-        assert_eq!("a day and 2 hours ago", english);
+        assert_eq!("1 day and 2 hours ago", english);
     }
 
     #[test]
     fn plus_1d() {
         let ht = HumanTime::from(Duration::days(1));
         let english = format!("{:#}", ht);
-        assert_eq!("in a day", english);
+        assert_eq!("in 1 day", english);
     }
 
     #[test]
     fn minus_1d() {
         let ht = HumanTime::from(Duration::days(-1));
         let english = format!("{:#}", ht);
-        assert_eq!("a day ago", english);
+        assert_eq!("1 day ago", english);
     }
 
     #[test]
@@ -227,42 +227,42 @@ mod duration {
     fn plus_7d() {
         let ht = HumanTime::from(Duration::days(7));
         let english = format!("{:#}", ht);
-        assert_eq!("in a week", english);
+        assert_eq!("in 1 week", english);
     }
 
     #[test]
     fn minus_7d() {
         let ht = HumanTime::from(Duration::days(-7));
         let english = format!("{:#}", ht);
-        assert_eq!("a week ago", english);
+        assert_eq!("1 week ago", english);
     }
 
     #[test]
     fn plus_10d() {
         let ht = HumanTime::from(Duration::days(10));
         let english = format!("{:#}", ht);
-        assert_eq!("in a week and 3 days", english);
+        assert_eq!("in 1 week and 3 days", english);
     }
 
     #[test]
     fn minus_10d() {
         let ht = HumanTime::from(Duration::days(-10));
         let english = format!("{:#}", ht);
-        assert_eq!("a week and 3 days ago", english);
+        assert_eq!("1 week and 3 days ago", english);
     }
 
     #[test]
     fn plus_11d() {
         let ht = HumanTime::from(Duration::days(11));
         let english = format!("{:#}", ht);
-        assert_eq!("in a week and 4 days", english);
+        assert_eq!("in 1 week and 4 days", english);
     }
 
     #[test]
     fn minus_11d() {
         let ht = HumanTime::from(Duration::days(-11));
         let english = format!("{:#}", ht);
-        assert_eq!("a week and 4 days ago", english);
+        assert_eq!("1 week and 4 days ago", english);
     }
 
     #[test]
@@ -283,42 +283,42 @@ mod duration {
     fn plus_30d() {
         let ht = HumanTime::from(Duration::days(30));
         let english = format!("{:#}", ht);
-        assert_eq!("in a month", english);
+        assert_eq!("in 1 month", english);
     }
 
     #[test]
     fn minus_30d() {
         let ht = HumanTime::from(Duration::days(-30));
         let english = format!("{:#}", ht);
-        assert_eq!("a month ago", english);
+        assert_eq!("1 month ago", english);
     }
 
     #[test]
     fn plus_45d() {
         let ht = HumanTime::from(Duration::days(45));
         let english = format!("{:#}", ht);
-        assert_eq!("in a month, 2 weeks and a day", english);
+        assert_eq!("in 1 month, 2 weeks and 1 day", english);
     }
 
     #[test]
     fn minus_45d() {
         let ht = HumanTime::from(Duration::days(-45));
         let english = format!("{:#}", ht);
-        assert_eq!("a month, 2 weeks and a day ago", english);
+        assert_eq!("1 month, 2 weeks and 1 day ago", english);
     }
 
     #[test]
     fn plus_46d() {
         let ht = HumanTime::from(Duration::days(46));
         let english = format!("{:#}", ht);
-        assert_eq!("in a month, 2 weeks and 2 days", english);
+        assert_eq!("in 1 month, 2 weeks and 2 days", english);
     }
 
     #[test]
     fn minus_46d() {
         let ht = HumanTime::from(Duration::days(-46));
         let english = format!("{:#}", ht);
-        assert_eq!("a month, 2 weeks and 2 days ago", english);
+        assert_eq!("1 month, 2 weeks and 2 days ago", english);
     }
 
     #[test]
@@ -367,14 +367,14 @@ mod duration {
     fn plus_100w() {
         let ht = HumanTime::from(Duration::weeks(100));
         let english = format!("{:#}", ht);
-        assert_eq!("in a year, 11 months and 5 days", english);
+        assert_eq!("in 1 year, 11 months and 5 days", english);
     }
 
     #[test]
     fn minus_100w() {
         let ht = HumanTime::from(Duration::weeks(-100));
         let english = format!("{:#}", ht);
-        assert_eq!("a year, 11 months and 5 days ago", english);
+        assert_eq!("1 year, 11 months and 5 days ago", english);
     }
 
     #[test]
@@ -436,7 +436,7 @@ mod local {
         let past = Local::now() - Duration::days(35);
         let ht = HumanTime::from(past);
         let english = format!("{:#}", ht);
-        assert_eq!("a month ago", english);
+        assert_eq!("1 month ago", english);
     }
 
     #[test]
@@ -444,6 +444,6 @@ mod local {
         let future = Local::now() + Duration::days(35);
         let ht = HumanTime::from(future);
         let english = format!("{:#}", ht);
-        assert_eq!("in a month", english);
+        assert_eq!("in 1 month", english);
     }
 }
