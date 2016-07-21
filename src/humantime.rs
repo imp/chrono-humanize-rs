@@ -2,6 +2,7 @@ use std::fmt;
 use std::convert::From;
 use std::cmp::max;
 use chrono::{DateTime, Duration, TimeZone, UTC};
+use super::Humanize;
 
 #[derive(Debug)]
 enum TimePeriod {
@@ -227,5 +228,17 @@ impl<TZ> From<DateTime<TZ>> for HumanTime
 {
     fn from(dt: DateTime<TZ>) -> Self {
         HumanTime::from(dt.with_timezone(&UTC) - UTC::now())
+    }
+}
+
+impl Humanize for Duration {
+    fn humanize(&self) -> String {
+        format!("{}", HumanTime::from(self.clone()))
+    }
+}
+
+impl<TZ> Humanize for DateTime<TZ> where TZ: TimeZone {
+    fn humanize(&self) -> String {
+        format!("{}", HumanTime::from(self.clone()))
     }
 }
