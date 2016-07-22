@@ -242,3 +242,22 @@ impl<TZ> Humanize for DateTime<TZ> where TZ: TimeZone {
         format!("{}", HumanTime::from(self.clone()))
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use chrono::Duration;
+    use test::Bencher;
+
+    #[bench]
+    fn one_week(b: &mut Bencher) {
+        let ht = HumanTime::from(Duration::weeks(1));
+        b.iter(|| format!("{}", ht));
+    }
+
+    #[bench]
+    fn two_weeks(b: &mut Bencher) {
+        let ht = HumanTime::from(Duration::weeks(2));
+        b.iter(|| format!("{}", ht));
+    }
+}
