@@ -7,6 +7,7 @@ keywords = ["humanize", "chrono", "time", "date", "arrow"]
 repository = "https://gitlab.com/imp/chrono-humanize-rs.git"
 homepage = "https://gitlab.com/imp/chrono-humanize-rs"
 license = "MIT/Apache-2.0"
+readme = "README.md"
 
 [dependencies]
 chrono = "0.2"
