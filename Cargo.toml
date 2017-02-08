@@ -10,4 +10,4 @@ license = "MIT/Apache-2.0"
 readme = "README.md"
 
 [dependencies]
-chrono = "0.2"
+chrono = "0.3"

@@ -227,7 +227,7 @@ impl<TZ> From<DateTime<TZ>> for HumanTime
     where TZ: TimeZone
 {
     fn from(dt: DateTime<TZ>) -> Self {
-        HumanTime::from(dt.with_timezone(&UTC) - UTC::now())
+        HumanTime::from(dt.signed_duration_since(UTC::now()))
     }
 }
 
