@@ -20,7 +20,7 @@ nightly:
   script:
     - cargo test --verbose --jobs 1 --release
 
-pages:
+.pages:
   image: rustdocker/rust:stable
   stage: deploy
   only:

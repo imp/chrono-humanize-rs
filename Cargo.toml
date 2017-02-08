@@ -2,6 +2,7 @@
 authors = ["Cyril Plisko <cyril.plisko@mountall.com>"]
 categories = ["date-and-time", "value-formatting"]
 description = "Human-friendly time expressions - similar to Python arrow.humanize"
+documentation = "https://docs.rs/chrono-humanize"
 homepage = "https://gitlab.com/imp/chrono-humanize-rs"
 keywords = ["humanize", "chrono", "time", "date", "arrow"]
 license = "MIT/Apache-2.0"
