@@ -1,6 +1,6 @@
 use std::fmt;
-use std::convert::From;
 use std::cmp::max;
+use std::convert::From;
 use chrono::{DateTime, Duration, TimeZone, UTC};
 use super::Humanize;
 
@@ -237,7 +237,9 @@ impl Humanize for Duration {
     }
 }
 
-impl<TZ> Humanize for DateTime<TZ> where TZ: TimeZone {
+impl<TZ> Humanize for DateTime<TZ>
+    where TZ: TimeZone
+{
     fn humanize(&self) -> String {
         format!("{}", HumanTime::from(self.clone()))
     }
