@@ -31,9 +31,7 @@
 //! ```
 //!
 
-#![feature(test)]
 extern crate chrono;
-extern crate test;
 
 mod humantime;
 pub use humantime::HumanTime;

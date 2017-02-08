@@ -244,31 +244,3 @@ impl<TZ> Humanize for DateTime<TZ>
         format!("{}", HumanTime::from(self.clone()))
     }
 }
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use chrono::Duration;
-    use test::Bencher;
-
-    #[bench]
-    fn one_week(b: &mut Bencher) {
-        let ht = HumanTime::from(Duration::weeks(1));
-        b.iter(|| format!("{}", ht));
-    }
-
-    #[bench]
-    fn two_weeks(b: &mut Bencher) {
-        let ht = HumanTime::from(Duration::weeks(2));
-        b.iter(|| format!("{}", ht));
-    }
-
-    #[bench]
-    fn long_string(b: &mut Bencher) {
-        let ht = HumanTime::from(Duration::seconds(1234567890));
-        b.iter(|| format!("{:#}", ht));
-        // let english = format!("{:#}", ht);
-        // assert_eq!("in 39 years, 1 month, 3 weeks, 2 days, 23 hours, 31 minutes and 30 seconds",
-        //            english);
-    }
-}
