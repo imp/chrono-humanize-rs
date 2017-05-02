@@ -233,7 +233,7 @@ impl<TZ> From<DateTime<TZ>> for HumanTime
 
 impl Humanize for Duration {
     fn humanize(&self) -> String {
-        format!("{}", HumanTime::from(self.clone()))
+        format!("{}", HumanTime::from(*self))
     }
 }
 
