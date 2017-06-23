@@ -408,12 +408,12 @@ mod duration {
 
 #[cfg(test)]
 mod utc {
-    use chrono::UTC;
+    use chrono::Utc;
     use chrono_humanize::HumanTime;
 
     #[test]
     fn now() {
-        let ht = HumanTime::from(UTC::now());
+        let ht = HumanTime::from(Utc::now());
         let english = format!("{:#}", ht);
         assert_eq!("0 seconds", english);
     }

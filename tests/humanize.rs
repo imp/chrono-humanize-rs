@@ -339,12 +339,12 @@ mod duration {
 
 #[cfg(test)]
 mod utc {
-    use chrono::UTC;
+    use chrono::Utc;
     use chrono_humanize::Humanize;
 
     #[test]
     fn now() {
-        let english = UTC::now().humanize();
+        let english = Utc::now().humanize();
         assert_eq!("now", english);
     }
 }

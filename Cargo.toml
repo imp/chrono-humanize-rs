@@ -16,4 +16,4 @@ gitlab = { repository = "imp/chrono-humanize-rs" }
 travis-ci = { repository = "imp/chrono-humanize-rs" }
 
 [dependencies]
-chrono = "0.3"
+chrono = "0.4"

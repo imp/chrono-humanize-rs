@@ -1,7 +1,7 @@
 use std::fmt;
 use std::cmp::max;
 use std::convert::From;
-use chrono::{DateTime, Duration, TimeZone, UTC};
+use chrono::{DateTime, Duration, TimeZone, Utc};
 use super::Humanize;
 
 #[derive(Debug)]
@@ -227,7 +227,7 @@ impl<TZ> From<DateTime<TZ>> for HumanTime
     where TZ: TimeZone
 {
     fn from(dt: DateTime<TZ>) -> Self {
-        HumanTime::from(dt.signed_duration_since(UTC::now()))
+        HumanTime::from(dt.signed_duration_since(Utc::now()))
     }
 }
 
