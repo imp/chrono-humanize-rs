@@ -224,7 +224,8 @@ impl From<Duration> for HumanTime {
 }
 
 impl<TZ> From<DateTime<TZ>> for HumanTime
-    where TZ: TimeZone
+where
+    TZ: TimeZone,
 {
     fn from(dt: DateTime<TZ>) -> Self {
         HumanTime::from(dt.signed_duration_since(Utc::now()))
@@ -238,7 +239,8 @@ impl Humanize for Duration {
 }
 
 impl<TZ> Humanize for DateTime<TZ>
-    where TZ: TimeZone
+where
+    TZ: TimeZone,
 {
     fn humanize(&self) -> String {
         format!("{}", HumanTime::from(self.clone()))
