@@ -70,6 +70,7 @@ impl TimePeriod {
         use self::TimePeriod::*;
         match *self {
             Now => String::from("now"),
+            Seconds(1) => String::from("1 second"),
             Seconds(n) => format!("{} seconds", n),
             Minutes(1) => String::from("1 minute"),
             Minutes(n) => format!("{} minutes", n),
