@@ -14,6 +14,20 @@ mod duration {
     }
 
     #[test]
+    fn plus_1s() {
+        let ht = HumanTime::from(Duration::seconds(1));
+        let english = format!("{}", ht);
+        assert_eq!("now", english);
+    }
+
+    #[test]
+    fn minus_1s() {
+        let ht = HumanTime::from(Duration::seconds(-1));
+        let english = format!("{}", ht);
+        assert_eq!("now", english);
+    }
+
+    #[test]
     fn plus_5s() {
         let ht = HumanTime::from(Duration::seconds(5));
         let english = format!("{}", ht);
