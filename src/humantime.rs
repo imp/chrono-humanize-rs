@@ -131,18 +131,17 @@ impl HumanTime {
             _ => Tense::Present,
         };
 
-        let periods = if accuracy.is_precise() {
-            Self::precise_period(self.0)
-        } else {
-            vec![Self::rough_period(self.0)]
+        let periods = match accuracy {
+            Accuracy::Rough => Self::rough_period(self.0),
+            Accuracy::Precise => Self::precise_period(self.0),
         };
         (periods, tense)
     }
 
-    fn rough_period(duration: Duration) -> TimePeriod {
+    fn rough_period(duration: Duration) -> Vec<TimePeriod> {
         use self::TimePeriod::*;
 
-        match duration.num_seconds().abs() {
+        let period = match duration.num_seconds().abs() {
             n if n > 547 * DAY => Years(max(n / YEAR, 2)),
             n if n > 345 * DAY => Years(1),
             n if n > 45 * DAY => Months(max(n / MONTH, 2)),
@@ -158,7 +157,9 @@ impl HumanTime {
             n if n > 10 => Seconds(n),
             0...10 => Now,
             _ => Eternity,
-        }
+        };
+
+        vec![period]
     }
 
     fn precise_period(duration: Duration) -> Vec<TimePeriod> {
@@ -248,7 +249,7 @@ where
     TZ: TimeZone,
 {
     fn from(dt: DateTime<TZ>) -> Self {
-        Self::from(dt.signed_duration_since(Utc::now()))
+        dt.signed_duration_since(Utc::now()).into()
     }
 }
 

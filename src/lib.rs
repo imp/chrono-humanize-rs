@@ -37,7 +37,7 @@
 
 extern crate chrono;
 
-pub use humantime::HumanTime;
+pub use humantime::{Accuracy, HumanTime, Tense};
 
 mod humantime;
 
