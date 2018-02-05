@@ -5,7 +5,6 @@ use chrono::{DateTime, Duration, TimeZone, Utc};
 
 use Humanize;
 
-
 /// Indicates the time of the period in relation to the time of the utterance
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Tense {
@@ -121,27 +120,44 @@ impl TimePeriod {
 pub struct HumanTime(Duration);
 
 impl HumanTime {
-    fn humanize(&self, accuracy: Accuracy) -> (Vec<TimePeriod>, Tense) {
+    fn to_text_en(&self, accuracy: Accuracy, tense: Tense) -> String {
+        let mut periods = match accuracy {
+            Accuracy::Rough => self.rough_period(),
+            Accuracy::Precise => self.precise_period(),
+        };
+
+        let first = periods.remove(0);
+        let last = periods.pop();
+
+        let append = |acc: String, p: TimePeriod| format!("{}, {}", acc, p.to_string(accuracy));
+        let mut text = periods.into_iter().fold(first.to_string(accuracy), append);
+
+        if let Some(last) = last {
+            text = format!("{} and {}", text, last.to_string(accuracy));
+        }
+
+        match tense {
+            Tense::Past => format!("{} ago", text),
+            Tense::Future => format!("in {}", text),
+            Tense::Present => format!("{}", text),
+        }
+    }
+
+    fn tense(&self, accuracy: Accuracy) -> Tense {
         use std::i64::{MIN, MAX};
 
-        let tense = match self.0.num_seconds() {
+        match self.0.num_seconds() {
             -10...10 if accuracy.is_rough() => Tense::Present,
             MIN...-1 => Tense::Past,
             1...MAX => Tense::Future,
             _ => Tense::Present,
-        };
-
-        let periods = match accuracy {
-            Accuracy::Rough => Self::rough_period(self.0),
-            Accuracy::Precise => Self::precise_period(self.0),
-        };
-        (periods, tense)
+        }
     }
 
-    fn rough_period(duration: Duration) -> Vec<TimePeriod> {
+    fn rough_period(&self) -> Vec<TimePeriod> {
         use self::TimePeriod::*;
 
-        let period = match duration.num_seconds().abs() {
+        let period = match self.0.num_seconds().abs() {
             n if n > 547 * DAY => Years(max(n / YEAR, 2)),
             n if n > 345 * DAY => Years(1),
             n if n > 45 * DAY => Months(max(n / MONTH, 2)),
@@ -162,12 +178,12 @@ impl HumanTime {
         vec![period]
     }
 
-    fn precise_period(duration: Duration) -> Vec<TimePeriod> {
+    fn precise_period(&self) -> Vec<TimePeriod> {
         use self::TimePeriod::*;
 
         let zero = Duration::zero().num_seconds();
 
-        let mut duration = duration.num_seconds().abs();
+        let mut duration = self.0.num_seconds().abs();
         let mut periods = Vec::<TimePeriod>::new();
 
         if duration >= YEAR {
@@ -208,26 +224,8 @@ impl HumanTime {
     }
 
     fn locale_en(&self, accuracy: Accuracy) -> String {
-        let (mut periods, tense) = self.humanize(accuracy);
-        let mut time = periods.remove(0).to_string(accuracy);
-        let last = periods.pop().map(|p| p.to_string(accuracy));
-        for period in periods {
-            time = time + ", " + &period.to_string(accuracy);
-        }
-
-        if let Some(last) = last {
-            time = time + " and " + &last;
-        }
-
-        Self::tense_en(tense, &time)
-    }
-
-    pub fn tense_en(tense: Tense, text: &str) -> String {
-        match tense {
-            Tense::Past => format!("{} ago", text),
-            Tense::Future => format!("in {}", text),
-            Tense::Present => format!("{}", text),
-        }
+        let tense = self.tense(accuracy);
+        self.to_text_en(accuracy, tense)
     }
 }
 
