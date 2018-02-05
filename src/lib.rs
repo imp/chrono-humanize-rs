@@ -51,6 +51,7 @@
 #![cfg_attr(all(feature = "cargo-clippy", feature = "pedantic"), warn(clippy_pedantic))]
 #![cfg_attr(feature = "cargo-clippy", warn(use_self))]
 #![deny(warnings, missing_debug_implementations)]
+#![doc(html_root_url = "https://docs.rs/chrono-humanize/0.0.11")]
 
 extern crate chrono;
 
