@@ -145,12 +145,10 @@ impl HumanTime {
     }
 
     fn tense(&self, accuracy: Accuracy) -> Tense {
-        use std::i64::{MIN, MAX};
-
         match self.0.num_seconds() {
             -10...10 if accuracy.is_rough() => Tense::Present,
-            MIN...-1 => Tense::Past,
-            1...MAX => Tense::Future,
+            seconds if seconds.is_negative() => Tense::Past,
+            seconds if seconds.is_positive() => Tense::Future,
             _ => Tense::Present,
         }
     }
