@@ -19,7 +19,6 @@ mod duration {
     use chrono::Duration;
     use chrono_humanize::{Accuracy, HumanTime, Tense};
 
-
     // test_name: Duration expression, "Rough text", "Precise text"
     duration_test! {
         now: Duration::zero(), "now", "0 seconds",
