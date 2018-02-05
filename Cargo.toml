@@ -14,6 +14,7 @@ version = "0.0.10"
 [badges]
 gitlab = { repository = "imp/chrono-humanize-rs" }
 travis-ci = { repository = "imp/chrono-humanize-rs" }
+maintenance = { status = "experimental" }
 
 [dependencies]
 chrono = "0.4"
