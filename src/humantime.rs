@@ -120,7 +120,7 @@ impl TimePeriod {
 pub struct HumanTime(Duration);
 
 impl HumanTime {
-    fn to_text_en(&self, accuracy: Accuracy, tense: Tense) -> String {
+    pub fn to_text_en(&self, accuracy: Accuracy, tense: Tense) -> String {
         let mut periods = match accuracy {
             Accuracy::Rough => self.rough_period(),
             Accuracy::Precise => self.precise_period(),
