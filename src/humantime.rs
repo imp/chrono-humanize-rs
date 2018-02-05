@@ -159,24 +159,6 @@ impl HumanTime {
             0...10 => Now,
             _ => Eternity,
         }
-
-        // match duration.num_seconds().abs() {
-        //     0...10 => Now,
-        //     n @ 11...44 => Seconds(n),
-        //     45...90 => Minutes(1),
-        //     n @ 91...2700 => Minutes(max(n / 60, 2)),
-        //     2700...5400 => Hours(1),
-        //     n @ 5400...79200 => Hours(max(n / 3600, 2)),
-        //     79200...129600 => Days(1),
-        //     n @ 129600...561600 => Days(max(n / 86400, 2)),
-        //     561600...907200 => Weeks(1),
-        //     n @ 907200...2505600 => Weeks(max(n / 604800, 2)),
-        //     2505600...3888000 => Months(1),
-        //     n @ 3888000...29808000 => Months(max(n / 2592000, 2)),
-        //     29808000...47260800 => Years(1),
-        //     n @ 47260800...MAX => Years(max(n / 31536000, 2)),
-        //     _ => Eternity,
-        // }
     }
 
     fn precise_period(duration: Duration) -> Vec<TimePeriod> {
