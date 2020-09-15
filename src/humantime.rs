@@ -38,16 +38,6 @@ impl Accuracy {
     }
 }
 
-impl From<bool> for Accuracy {
-    fn from(precise: bool) -> Self {
-        if precise {
-            Self::Precise
-        } else {
-            Self::Rough
-        }
-    }
-}
-
 // Number of seconds in various time periods
 const MINUTE: i64 = 60;
 const HOUR: i64 = MINUTE * 60;
@@ -134,7 +124,6 @@ impl HumanTime {
         let first = periods.remove(0).to_text(accuracy);
         let last = periods.pop().map(|last| last.to_text(accuracy));
 
-        // let append = |acc, p| format!("{}, {}", acc, p.to_text(accuracy));
         let mut text = periods.into_iter().fold(first, |acc, p| {
             format!("{}, {}", acc, p.to_text(accuracy)).into()
         });
@@ -232,7 +221,12 @@ impl HumanTime {
 
 impl fmt::Display for HumanTime {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let accuracy = f.alternate().into();
+        let accuracy = if f.alternate() {
+            Accuracy::Precise
+        } else {
+            Accuracy::Rough
+        };
+
         f.pad(&self.locale_en(accuracy))
     }
 }
