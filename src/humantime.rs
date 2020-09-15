@@ -1,6 +1,7 @@
 use std::borrow::Cow;
 use std::cmp::max;
 use std::fmt;
+use std::time::SystemTime;
 
 use chrono::{DateTime, Duration, TimeZone, Utc};
 
@@ -250,6 +251,12 @@ where
     }
 }
 
+impl From<SystemTime> for HumanTime {
+    fn from(st: SystemTime) -> Self {
+        DateTime::<Utc>::from(st).into()
+    }
+}
+
 impl Humanize for Duration {
     fn humanize(&self) -> String {
         format!("{}", HumanTime::from(*self))
@@ -262,5 +269,11 @@ where
 {
     fn humanize(&self) -> String {
         format!("{}", HumanTime::from(self.clone()))
+    }
+}
+
+impl Humanize for SystemTime {
+    fn humanize(&self) -> String {
+        HumanTime::from(*self).to_string()
     }
 }
