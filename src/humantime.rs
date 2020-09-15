@@ -1,3 +1,4 @@
+use std::borrow::Cow;
 use std::cmp::max;
 use std::fmt;
 
@@ -68,53 +69,53 @@ enum TimePeriod {
 }
 
 impl TimePeriod {
-    fn to_string_precise(&self) -> String {
+    fn to_text_precise(&self) -> Cow<'static, str> {
         use self::TimePeriod::*;
         match *self {
-            Now => String::from("now"),
-            Seconds(1) => String::from("1 second"),
-            Seconds(n) => format!("{} seconds", n),
-            Minutes(1) => String::from("1 minute"),
-            Minutes(n) => format!("{} minutes", n),
-            Hours(1) => String::from("1 hour"),
-            Hours(n) => format!("{} hours", n),
-            Days(1) => String::from("1 day"),
-            Days(n) => format!("{} days", n),
-            Weeks(1) => String::from("1 week"),
-            Weeks(n) => format!("{} weeks", n),
-            Months(1) => String::from("1 month"),
-            Months(n) => format!("{} months", n),
-            Years(1) => String::from("1 year"),
-            Years(n) => format!("{} years", n),
-            Eternity => String::from("eternity"),
+            Now => "now".into(),
+            Seconds(1) => "1 second".into(),
+            Seconds(n) => format!("{} seconds", n).into(),
+            Minutes(1) => "1 minute".into(),
+            Minutes(n) => format!("{} minutes", n).into(),
+            Hours(1) => "1 hour".into(),
+            Hours(n) => format!("{} hours", n).into(),
+            Days(1) => "1 day".into(),
+            Days(n) => format!("{} days", n).into(),
+            Weeks(1) => "1 week".into(),
+            Weeks(n) => format!("{} weeks", n).into(),
+            Months(1) => "1 month".into(),
+            Months(n) => format!("{} months", n).into(),
+            Years(1) => "1 year".into(),
+            Years(n) => format!("{} years", n).into(),
+            Eternity => "eternity".into(),
         }
     }
 
-    fn to_string_rough(&self) -> String {
+    fn to_text_rough(&self) -> Cow<'static, str> {
         use self::TimePeriod::*;
         match *self {
-            Now => String::from("now"),
-            Seconds(n) => format!("{} seconds", n),
-            Minutes(1) => String::from("a minute"),
-            Minutes(n) => format!("{} minutes", n),
-            Hours(1) => String::from("an hour"),
-            Hours(n) => format!("{} hours", n),
-            Days(1) => String::from("a day"),
-            Days(n) => format!("{} days", n),
-            Weeks(1) => String::from("a week"),
-            Weeks(n) => format!("{} weeks", n),
-            Months(1) => String::from("a month"),
-            Months(n) => format!("{} months", n),
-            Years(1) => String::from("a year"),
-            Years(n) => format!("{} years", n),
-            Eternity => String::from("eternity"),
+            Now => "now".into(),
+            Seconds(n) => format!("{} seconds", n).into(),
+            Minutes(1) => "a minute".into(),
+            Minutes(n) => format!("{} minutes", n).into(),
+            Hours(1) => "an hour".into(),
+            Hours(n) => format!("{} hours", n).into(),
+            Days(1) => "a day".into(),
+            Days(n) => format!("{} days", n).into(),
+            Weeks(1) => "a week".into(),
+            Weeks(n) => format!("{} weeks", n).into(),
+            Months(1) => "a month".into(),
+            Months(n) => format!("{} months", n).into(),
+            Years(1) => "a year".into(),
+            Years(n) => format!("{} years", n).into(),
+            Eternity => "eternity".into(),
         }
     }
 
-    fn to_string(&self, accuracy: Accuracy) -> String {
+    fn to_text(&self, accuracy: Accuracy) -> Cow<'static, str> {
         match accuracy {
-            Accuracy::Rough => self.to_string_rough(),
-            Accuracy::Precise => self.to_string_precise(),
+            Accuracy::Rough => self.to_text_rough(),
+            Accuracy::Precise => self.to_text_precise(),
         }
     }
 }
@@ -130,20 +131,22 @@ impl HumanTime {
             Accuracy::Precise => self.precise_period(),
         };
 
-        let first = periods.remove(0);
-        let last = periods.pop();
+        let first = periods.remove(0).to_text(accuracy);
+        let last = periods.pop().map(|last| last.to_text(accuracy));
 
-        let append = |acc: String, p: TimePeriod| format!("{}, {}", acc, p.to_string(accuracy));
-        let mut text = periods.into_iter().fold(first.to_string(accuracy), append);
+        // let append = |acc, p| format!("{}, {}", acc, p.to_text(accuracy));
+        let mut text = periods.into_iter().fold(first, |acc, p| {
+            format!("{}, {}", acc, p.to_text(accuracy)).into()
+        });
 
         if let Some(last) = last {
-            text = format!("{} and {}", text, last.to_string(accuracy));
+            text = format!("{} and {}", text, last).into();
         }
 
         match tense {
             Tense::Past => format!("{} ago", text),
             Tense::Future => format!("in {}", text),
-            Tense::Present => text,
+            Tense::Present => text.into_owned(),
         }
     }
 
