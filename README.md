@@ -10,9 +10,6 @@ Build status
 ## Quick Start
 
 ```rust
-extern crate chrono;
-extern crate chrono_humanize;
-
 use chrono::{Local, Duration};
 use chrono_humanize::HumanTime;
 
