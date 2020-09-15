@@ -8,7 +8,7 @@ use chrono::{DateTime, Duration, TimeZone, Utc};
 use crate::Humanize;
 
 /// Indicates the time of the period in relation to the time of the utterance
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd)]
 pub enum Tense {
     Past,
     Present,
@@ -16,7 +16,7 @@ pub enum Tense {
 }
 
 /// The accuracy of the representation
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, Hash, PartialEq, PartialOrd)]
 pub enum Accuracy {
     /// Rough approximation, easy to grasp, but not necessarily accurate
     Rough,
