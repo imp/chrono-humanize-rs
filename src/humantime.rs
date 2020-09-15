@@ -70,45 +70,43 @@ enum TimePeriod {
 
 impl TimePeriod {
     fn to_text_precise(&self) -> Cow<'static, str> {
-        use self::TimePeriod::*;
         match *self {
-            Now => "now".into(),
-            Seconds(1) => "1 second".into(),
-            Seconds(n) => format!("{} seconds", n).into(),
-            Minutes(1) => "1 minute".into(),
-            Minutes(n) => format!("{} minutes", n).into(),
-            Hours(1) => "1 hour".into(),
-            Hours(n) => format!("{} hours", n).into(),
-            Days(1) => "1 day".into(),
-            Days(n) => format!("{} days", n).into(),
-            Weeks(1) => "1 week".into(),
-            Weeks(n) => format!("{} weeks", n).into(),
-            Months(1) => "1 month".into(),
-            Months(n) => format!("{} months", n).into(),
-            Years(1) => "1 year".into(),
-            Years(n) => format!("{} years", n).into(),
-            Eternity => "eternity".into(),
+            Self::Now => "now".into(),
+            Self::Seconds(1) => "1 second".into(),
+            Self::Seconds(n) => format!("{} seconds", n).into(),
+            Self::Minutes(1) => "1 minute".into(),
+            Self::Minutes(n) => format!("{} minutes", n).into(),
+            Self::Hours(1) => "1 hour".into(),
+            Self::Hours(n) => format!("{} hours", n).into(),
+            Self::Days(1) => "1 day".into(),
+            Self::Days(n) => format!("{} days", n).into(),
+            Self::Weeks(1) => "1 week".into(),
+            Self::Weeks(n) => format!("{} weeks", n).into(),
+            Self::Months(1) => "1 month".into(),
+            Self::Months(n) => format!("{} months", n).into(),
+            Self::Years(1) => "1 year".into(),
+            Self::Years(n) => format!("{} years", n).into(),
+            Self::Eternity => "eternity".into(),
         }
     }
 
     fn to_text_rough(&self) -> Cow<'static, str> {
-        use self::TimePeriod::*;
         match *self {
-            Now => "now".into(),
-            Seconds(n) => format!("{} seconds", n).into(),
-            Minutes(1) => "a minute".into(),
-            Minutes(n) => format!("{} minutes", n).into(),
-            Hours(1) => "an hour".into(),
-            Hours(n) => format!("{} hours", n).into(),
-            Days(1) => "a day".into(),
-            Days(n) => format!("{} days", n).into(),
-            Weeks(1) => "a week".into(),
-            Weeks(n) => format!("{} weeks", n).into(),
-            Months(1) => "a month".into(),
-            Months(n) => format!("{} months", n).into(),
-            Years(1) => "a year".into(),
-            Years(n) => format!("{} years", n).into(),
-            Eternity => "eternity".into(),
+            Self::Now => "now".into(),
+            Self::Seconds(n) => format!("{} seconds", n).into(),
+            Self::Minutes(1) => "a minute".into(),
+            Self::Minutes(n) => format!("{} minutes", n).into(),
+            Self::Hours(1) => "an hour".into(),
+            Self::Hours(n) => format!("{} hours", n).into(),
+            Self::Days(1) => "a day".into(),
+            Self::Days(n) => format!("{} days", n).into(),
+            Self::Weeks(1) => "a week".into(),
+            Self::Weeks(n) => format!("{} weeks", n).into(),
+            Self::Months(1) => "a month".into(),
+            Self::Months(n) => format!("{} months", n).into(),
+            Self::Years(1) => "a year".into(),
+            Self::Years(n) => format!("{} years", n).into(),
+            Self::Eternity => "eternity".into(),
         }
     }
 
@@ -160,69 +158,65 @@ impl HumanTime {
     }
 
     fn rough_period(&self) -> Vec<TimePeriod> {
-        use self::TimePeriod::*;
-
         let period = match self.0.num_seconds().abs() {
-            n if n > 547 * DAY => Years(max(n / YEAR, 2)),
-            n if n > 345 * DAY => Years(1),
-            n if n > 45 * DAY => Months(max(n / MONTH, 2)),
-            n if n > 29 * DAY => Months(1),
-            n if n > 10 * DAY + 12 * HOUR => Weeks(max(n / WEEK, 2)),
-            n if n > 6 * DAY + 12 * HOUR => Weeks(1),
-            n if n > 36 * HOUR => Days(max(n / DAY, 2)),
-            n if n > 22 * HOUR => Days(1),
-            n if n > 90 * MINUTE => Hours(max(n / HOUR, 2)),
-            n if n > 45 * MINUTE => Hours(1),
-            n if n > 90 => Minutes(max(n / MINUTE, 2)),
-            n if n > 45 => Minutes(1),
-            n if n > 10 => Seconds(n),
-            0..=10 => Now,
-            _ => Eternity,
+            n if n > 547 * DAY => TimePeriod::Years(max(n / YEAR, 2)),
+            n if n > 345 * DAY => TimePeriod::Years(1),
+            n if n > 45 * DAY => TimePeriod::Months(max(n / MONTH, 2)),
+            n if n > 29 * DAY => TimePeriod::Months(1),
+            n if n > 10 * DAY + 12 * HOUR => TimePeriod::Weeks(max(n / WEEK, 2)),
+            n if n > 6 * DAY + 12 * HOUR => TimePeriod::Weeks(1),
+            n if n > 36 * HOUR => TimePeriod::Days(max(n / DAY, 2)),
+            n if n > 22 * HOUR => TimePeriod::Days(1),
+            n if n > 90 * MINUTE => TimePeriod::Hours(max(n / HOUR, 2)),
+            n if n > 45 * MINUTE => TimePeriod::Hours(1),
+            n if n > 90 => TimePeriod::Minutes(max(n / MINUTE, 2)),
+            n if n > 45 => TimePeriod::Minutes(1),
+            n if n > 10 => TimePeriod::Seconds(n),
+            0..=10 => TimePeriod::Now,
+            _ => TimePeriod::Eternity,
         };
 
         vec![period]
     }
 
     fn precise_period(&self) -> Vec<TimePeriod> {
-        use self::TimePeriod::*;
-
         let zero = Duration::zero().num_seconds();
 
         let mut duration = self.0.num_seconds().abs();
         let mut periods = Vec::<TimePeriod>::new();
 
         if duration >= YEAR {
-            periods.push(Years(duration / YEAR));
+            periods.push(TimePeriod::Years(duration / YEAR));
             duration %= YEAR;
         }
 
         if duration >= MONTH {
-            periods.push(Months(duration / MONTH));
+            periods.push(TimePeriod::Months(duration / MONTH));
             duration %= MONTH;
         }
 
         if duration >= WEEK {
-            periods.push(Weeks(duration / WEEK));
+            periods.push(TimePeriod::Weeks(duration / WEEK));
             duration %= WEEK;
         }
 
         if duration >= DAY {
-            periods.push(Days(duration / DAY));
+            periods.push(TimePeriod::Days(duration / DAY));
             duration %= DAY;
         }
 
         if duration >= HOUR {
-            periods.push(Hours(duration / HOUR));
+            periods.push(TimePeriod::Hours(duration / HOUR));
             duration %= HOUR;
         }
 
         if duration >= MINUTE {
-            periods.push(Minutes(duration / MINUTE));
+            periods.push(TimePeriod::Minutes(duration / MINUTE));
             duration %= MINUTE;
         }
 
         if duration > zero || periods.is_empty() {
-            periods.push(Seconds(duration));
+            periods.push(TimePeriod::Seconds(duration));
         }
 
         periods

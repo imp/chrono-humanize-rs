@@ -1,6 +1,3 @@
-extern crate chrono;
-extern crate chrono_humanize;
-
 #[cfg(test)]
 mod duration {
     use chrono::Duration;

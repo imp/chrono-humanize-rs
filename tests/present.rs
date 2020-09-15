@@ -1,6 +1,3 @@
-extern crate chrono;
-extern crate chrono_humanize;
-
 macro_rules! duration_test {
     ($($name:ident: $duration:expr, $rough:expr, $precise:expr,)+) => {
         $(#[test]
