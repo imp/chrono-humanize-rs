@@ -10,6 +10,7 @@ name = "chrono-humanize"
 readme = "README.md"
 repository = "https://gitlab.com/imp/chrono-humanize-rs.git"
 version = "0.0.11" # remember to update html_root_url
+edition = "2018"
 
 [badges]
 gitlab = { repository = "imp/chrono-humanize-rs" }

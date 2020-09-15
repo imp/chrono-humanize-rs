@@ -10,9 +10,6 @@
 //! Convert current time taken as `Local::now()` to `HumanTime`
 //!
 //! ```
-//! extern crate chrono;
-//! extern crate chrono_humanize;
-//!
 //! let dt = chrono::Local::now();
 //! let ht = chrono_humanize::HumanTime::from(dt);
 //!
@@ -21,9 +18,6 @@
 //!
 //!
 //! ```
-//! extern crate chrono;
-//! extern crate chrono_humanize;
-//!
 //! let dt = chrono::Local::now() - chrono::Duration::minutes(58);
 //! let ht = chrono_humanize::HumanTime::from(dt);
 //!
@@ -33,9 +27,6 @@
 //! For full control over the text representation use `HumanTime::to_text_en()`
 //!
 //! ```
-//! extern crate chrono;
-//! extern crate chrono_humanize;
-//!
 //! use chrono::Duration;
 //! use chrono_humanize::{Accuracy, HumanTime, Tense};
 //!
@@ -48,14 +39,19 @@
 //! # }
 //! ```
 
-#![cfg_attr(all(feature = "cargo-clippy", feature = "pedantic"), warn(clippy_pedantic))]
-#![cfg_attr(feature = "cargo-clippy", warn(use_self))]
-#![deny(warnings, missing_debug_implementations)]
+#![cfg_attr(feature = "pedantic", warn(clippy::pedantic))]
+#![warn(clippy::use_self)]
+#![warn(deprecated_in_future)]
+#![warn(future_incompatible)]
+#![warn(unreachable_pub)]
+#![warn(missing_debug_implementations)]
+#![warn(rust_2018_compatibility)]
+#![warn(rust_2018_idioms)]
+#![warn(unused)]
+#![deny(warnings)]
 #![doc(html_root_url = "https://docs.rs/chrono-humanize/0.0.11")]
 
-extern crate chrono;
-
-pub use humantime::{Accuracy, HumanTime, Tense};
+pub use crate::humantime::{Accuracy, HumanTime, Tense};
 
 mod humantime;
 

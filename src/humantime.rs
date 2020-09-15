@@ -3,7 +3,7 @@ use std::fmt;
 
 use chrono::{DateTime, Duration, TimeZone, Utc};
 
-use Humanize;
+use crate::Humanize;
 
 /// Indicates the time of the period in relation to the time of the utterance
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -37,9 +37,9 @@ impl Accuracy {
 impl From<bool> for Accuracy {
     fn from(precise: bool) -> Self {
         if precise {
-            Accuracy::Precise
+            Self::Precise
         } else {
-            Accuracy::Rough
+            Self::Rough
         }
     }
 }
@@ -140,7 +140,7 @@ impl HumanTime {
         match tense {
             Tense::Past => format!("{} ago", text),
             Tense::Future => format!("in {}", text),
-            Tense::Present => format!("{}", text),
+            Tense::Present => text,
         }
     }
 
@@ -229,7 +229,7 @@ impl HumanTime {
 }
 
 impl fmt::Display for HumanTime {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let accuracy = f.alternate().into();
         f.pad(&self.locale_en(accuracy))
     }
@@ -237,7 +237,7 @@ impl fmt::Display for HumanTime {
 
 impl From<Duration> for HumanTime {
     fn from(duration: Duration) -> Self {
-        HumanTime(duration)
+        Self(duration)
     }
 }
 
