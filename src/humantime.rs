@@ -24,13 +24,15 @@ pub enum Accuracy {
 
 impl Accuracy {
     /// Returns whether this accuracy is precise
-    pub fn is_precise(&self) -> bool {
-        *self == Accuracy::Precise
+    #[must_use]
+    pub fn is_precise(self) -> bool {
+        self == Self::Precise
     }
 
     /// Returns whether this accuracy is rough
-    pub fn is_rough(&self) -> bool {
-        *self == Accuracy::Rough
+    #[must_use]
+    pub fn is_rough(self) -> bool {
+        self == Self::Rough
     }
 }
 
@@ -121,6 +123,7 @@ impl TimePeriod {
 pub struct HumanTime(Duration);
 
 impl HumanTime {
+    #[must_use]
     pub fn to_text_en(&self, accuracy: Accuracy, tense: Tense) -> String {
         let mut periods = match accuracy {
             Accuracy::Rough => self.rough_period(),
