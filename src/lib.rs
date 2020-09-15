@@ -49,7 +49,7 @@
 #![warn(rust_2018_idioms)]
 #![warn(unused)]
 #![deny(warnings)]
-#![doc(html_root_url = "https://docs.rs/chrono-humanize/0.0.11")]
+#![doc(html_root_url = "https://docs.rs/chrono-humanize/0.1.0")]
 
 pub use crate::humantime::{Accuracy, HumanTime, Tense};
 
