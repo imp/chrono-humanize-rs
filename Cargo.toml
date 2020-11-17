@@ -22,3 +22,4 @@ chrono = "0.4"
 
 [features]
 pedantic = []
+wasmbind = ["chrono/wasmbind"]
