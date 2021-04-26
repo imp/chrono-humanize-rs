@@ -46,7 +46,7 @@ const WEEK: i64 = DAY * 7;
 const MONTH: i64 = DAY * 30;
 const YEAR: i64 = DAY * 365;
 
-#[derive(Debug)]
+#[derive(Clone, Copy, Debug)]
 enum TimePeriod {
     Now,
     Seconds(i64),
@@ -60,8 +60,8 @@ enum TimePeriod {
 }
 
 impl TimePeriod {
-    fn to_text_precise(&self) -> Cow<'static, str> {
-        match *self {
+    fn to_text_precise(self) -> Cow<'static, str> {
+        match self {
             Self::Now => "now".into(),
             Self::Seconds(1) => "1 second".into(),
             Self::Seconds(n) => format!("{} seconds", n).into(),
@@ -81,8 +81,8 @@ impl TimePeriod {
         }
     }
 
-    fn to_text_rough(&self) -> Cow<'static, str> {
-        match *self {
+    fn to_text_rough(self) -> Cow<'static, str> {
+        match self {
             Self::Now => "now".into(),
             Self::Seconds(n) => format!("{} seconds", n).into(),
             Self::Minutes(1) => "a minute".into(),
@@ -101,7 +101,7 @@ impl TimePeriod {
         }
     }
 
-    fn to_text(&self, accuracy: Accuracy) -> Cow<'static, str> {
+    fn to_text(self, accuracy: Accuracy) -> Cow<'static, str> {
         match accuracy {
             Accuracy::Rough => self.to_text_rough(),
             Accuracy::Precise => self.to_text_precise(),
@@ -139,7 +139,7 @@ impl HumanTime {
         }
     }
 
-    fn tense(&self, accuracy: Accuracy) -> Tense {
+    fn tense(self, accuracy: Accuracy) -> Tense {
         match self.0.num_seconds() {
             -10..=10 if accuracy.is_rough() => Tense::Present,
             seconds if seconds.is_negative() => Tense::Past,
@@ -148,7 +148,7 @@ impl HumanTime {
         }
     }
 
-    fn rough_period(&self) -> Vec<TimePeriod> {
+    fn rough_period(self) -> Vec<TimePeriod> {
         let period = match self.0.num_seconds().abs() {
             n if n > 547 * DAY => TimePeriod::Years(max(n / YEAR, 2)),
             n if n > 345 * DAY => TimePeriod::Years(1),
@@ -170,44 +170,44 @@ impl HumanTime {
         vec![period]
     }
 
-    fn precise_period(&self) -> Vec<TimePeriod> {
+    fn precise_period(self) -> Vec<TimePeriod> {
         let zero = Duration::zero().num_seconds();
 
-        let mut duration = self.0.num_seconds().abs();
+        let mut seconds = self.0.num_seconds().abs();
         let mut periods = Vec::<TimePeriod>::new();
 
-        if duration >= YEAR {
-            periods.push(TimePeriod::Years(duration / YEAR));
-            duration %= YEAR;
+        if seconds >= YEAR {
+            periods.push(TimePeriod::Years(seconds / YEAR));
+            seconds %= YEAR;
         }
 
-        if duration >= MONTH {
-            periods.push(TimePeriod::Months(duration / MONTH));
-            duration %= MONTH;
+        if seconds >= MONTH {
+            periods.push(TimePeriod::Months(seconds / MONTH));
+            seconds %= MONTH;
         }
 
-        if duration >= WEEK {
-            periods.push(TimePeriod::Weeks(duration / WEEK));
-            duration %= WEEK;
+        if seconds >= WEEK {
+            periods.push(TimePeriod::Weeks(seconds / WEEK));
+            seconds %= WEEK;
         }
 
-        if duration >= DAY {
-            periods.push(TimePeriod::Days(duration / DAY));
-            duration %= DAY;
+        if seconds >= DAY {
+            periods.push(TimePeriod::Days(seconds / DAY));
+            seconds %= DAY;
         }
 
-        if duration >= HOUR {
-            periods.push(TimePeriod::Hours(duration / HOUR));
-            duration %= HOUR;
+        if seconds >= HOUR {
+            periods.push(TimePeriod::Hours(seconds / HOUR));
+            seconds %= HOUR;
         }
 
-        if duration >= MINUTE {
-            periods.push(TimePeriod::Minutes(duration / MINUTE));
-            duration %= MINUTE;
+        if seconds >= MINUTE {
+            periods.push(TimePeriod::Minutes(seconds / MINUTE));
+            seconds %= MINUTE;
         }
 
-        if duration > zero || periods.is_empty() {
-            periods.push(TimePeriod::Seconds(duration));
+        if seconds > zero || periods.is_empty() {
+            periods.push(TimePeriod::Seconds(seconds));
         }
 
         periods
