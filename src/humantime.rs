@@ -39,12 +39,12 @@ impl Accuracy {
 }
 
 // Number of seconds in various time periods
-const MINUTE: i64 = 60;
-const HOUR: i64 = MINUTE * 60;
-const DAY: i64 = HOUR * 24;
-const WEEK: i64 = DAY * 7;
-const MONTH: i64 = DAY * 30;
-const YEAR: i64 = DAY * 365;
+const S_MINUTE: i64 = 60;
+const S_HOUR: i64 = S_MINUTE * 60;
+const S_DAY: i64 = S_HOUR * 24;
+const S_WEEK: i64 = S_DAY * 7;
+const S_MONTH: i64 = S_DAY * 30;
+const S_YEAR: i64 = S_DAY * 365;
 
 #[derive(Clone, Copy, Debug)]
 enum TimePeriod {
@@ -113,6 +113,9 @@ impl TimePeriod {
 pub struct HumanTime(Duration);
 
 impl HumanTime {
+    const DAYS_IN_YEAR: i64 = 365;
+    const DAYS_IN_MONTH: i64 = 30;
+
     /// Gives English text representation of the `HumanTime` with given `accuracy` and 'tense`
     #[must_use]
     pub fn to_text_en(self, accuracy: Accuracy, tense: Tense) -> String {
@@ -150,17 +153,17 @@ impl HumanTime {
 
     fn rough_period(self) -> Vec<TimePeriod> {
         let period = match self.0.num_seconds().abs() {
-            n if n > 547 * DAY => TimePeriod::Years(max(n / YEAR, 2)),
-            n if n > 345 * DAY => TimePeriod::Years(1),
-            n if n > 45 * DAY => TimePeriod::Months(max(n / MONTH, 2)),
-            n if n > 29 * DAY => TimePeriod::Months(1),
-            n if n > 10 * DAY + 12 * HOUR => TimePeriod::Weeks(max(n / WEEK, 2)),
-            n if n > 6 * DAY + 12 * HOUR => TimePeriod::Weeks(1),
-            n if n > 36 * HOUR => TimePeriod::Days(max(n / DAY, 2)),
-            n if n > 22 * HOUR => TimePeriod::Days(1),
-            n if n > 90 * MINUTE => TimePeriod::Hours(max(n / HOUR, 2)),
-            n if n > 45 * MINUTE => TimePeriod::Hours(1),
-            n if n > 90 => TimePeriod::Minutes(max(n / MINUTE, 2)),
+            n if n > 547 * S_DAY => TimePeriod::Years(max(n / S_YEAR, 2)),
+            n if n > 345 * S_DAY => TimePeriod::Years(1),
+            n if n > 45 * S_DAY => TimePeriod::Months(max(n / S_MONTH, 2)),
+            n if n > 29 * S_DAY => TimePeriod::Months(1),
+            n if n > 10 * S_DAY + 12 * S_HOUR => TimePeriod::Weeks(max(n / S_WEEK, 2)),
+            n if n > 6 * S_DAY + 12 * S_HOUR => TimePeriod::Weeks(1),
+            n if n > 36 * S_HOUR => TimePeriod::Days(max(n / S_DAY, 2)),
+            n if n > 22 * S_HOUR => TimePeriod::Days(1),
+            n if n > 90 * S_MINUTE => TimePeriod::Hours(max(n / S_HOUR, 2)),
+            n if n > 45 * S_MINUTE => TimePeriod::Hours(1),
+            n if n > 90 => TimePeriod::Minutes(max(n / S_MINUTE, 2)),
             n if n > 45 => TimePeriod::Minutes(1),
             n if n > 10 => TimePeriod::Seconds(n),
             0..=10 => TimePeriod::Now,
@@ -171,46 +174,135 @@ impl HumanTime {
     }
 
     fn precise_period(self) -> Vec<TimePeriod> {
-        let zero = Duration::zero().num_seconds();
+        let mut periods = vec![];
 
-        let mut seconds = self.0.num_seconds().abs();
-        let mut periods = Vec::<TimePeriod>::new();
-
-        if seconds >= YEAR {
-            periods.push(TimePeriod::Years(seconds / YEAR));
-            seconds %= YEAR;
+        let (years, reminder) = self.split_years();
+        if let Some(years) = years {
+            periods.push(TimePeriod::Years(years));
         }
 
-        if seconds >= MONTH {
-            periods.push(TimePeriod::Months(seconds / MONTH));
-            seconds %= MONTH;
+        let (months, reminder) = reminder.split_months();
+        if let Some(months) = months {
+            periods.push(TimePeriod::Months(months));
         }
 
-        if seconds >= WEEK {
-            periods.push(TimePeriod::Weeks(seconds / WEEK));
-            seconds %= WEEK;
+        let (weeks, reminder) = reminder.split_weeks();
+        if let Some(weeks) = weeks {
+            periods.push(TimePeriod::Weeks(weeks));
         }
 
-        if seconds >= DAY {
-            periods.push(TimePeriod::Days(seconds / DAY));
-            seconds %= DAY;
+        let (days, reminder) = reminder.split_days();
+        if let Some(days) = days {
+            periods.push(TimePeriod::Days(days));
         }
 
-        if seconds >= HOUR {
-            periods.push(TimePeriod::Hours(seconds / HOUR));
-            seconds %= HOUR;
+        let (hours, reminder) = reminder.split_hours();
+        if let Some(hours) = hours {
+            periods.push(TimePeriod::Hours(hours));
         }
 
-        if seconds >= MINUTE {
-            periods.push(TimePeriod::Minutes(seconds / MINUTE));
-            seconds %= MINUTE;
+        let (minutes, reminder) = reminder.split_minutes();
+        if let Some(minutes) = minutes {
+            periods.push(TimePeriod::Minutes(minutes));
         }
 
-        if seconds > zero || periods.is_empty() {
+        let (seconds, _reminder) = reminder.split_seconds();
+        if let Some(seconds) = seconds {
             periods.push(TimePeriod::Seconds(seconds));
+        } else if periods.is_empty() {
+            periods.push(TimePeriod::Seconds(0));
         }
+
+        // let millis = reminder.0.num_milliseconds();
+        // if millis > 0 || periods.is_empty() {
+        //     periods.push(TimePeriod::Millis(millis))
+        // }
 
         periods
+    }
+
+    /// Split this `HumanTime` into number of whole years and the reminder
+    fn split_years(self) -> (Option<i64>, Self) {
+        let years = self.0.num_days() / Self::DAYS_IN_YEAR;
+        let reminder = self.0 - Duration::days(years * Self::DAYS_IN_YEAR);
+        let years = years.abs();
+        if years > 0 {
+            (Some(years), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole months and the reminder
+    fn split_months(self) -> (Option<i64>, Self) {
+        let months = self.0.num_days() / Self::DAYS_IN_MONTH;
+        let reminder = self.0 - Duration::days(months * Self::DAYS_IN_MONTH);
+        let months = months.abs();
+        if months > 0 {
+            (Some(months), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole weeks and the reminder
+    fn split_weeks(self) -> (Option<i64>, Self) {
+        let weeks = self.0.num_weeks();
+        let reminder = self.0 - Duration::weeks(weeks);
+        let weeks = weeks.abs();
+        if weeks > 0 {
+            (Some(weeks), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole days and the reminder
+    fn split_days(self) -> (Option<i64>, Self) {
+        let days = self.0.num_days();
+        let reminder = self.0 - Duration::days(days);
+        let days = days.abs();
+        if days > 0 {
+            (Some(days), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole hours and the reminder
+    fn split_hours(self) -> (Option<i64>, Self) {
+        let hours = self.0.num_hours();
+        let reminder = self.0 - Duration::hours(hours);
+        let hours = hours.abs();
+        if hours > 0 {
+            (Some(hours), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole minutes and the reminder
+    fn split_minutes(self) -> (Option<i64>, Self) {
+        let minutes = self.0.num_minutes();
+        let reminder = self.0 - Duration::minutes(minutes);
+        let minutes = minutes.abs();
+        if minutes > 0 {
+            (Some(minutes), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
+    }
+
+    /// Split this `HumanTime` into number of whole seconds and the reminder
+    fn split_seconds(self) -> (Option<i64>, Self) {
+        let seconds = self.0.num_seconds();
+        let reminder = self.0 - Duration::seconds(seconds);
+        let seconds = seconds.abs();
+        if seconds > 0 {
+            (Some(seconds), Self(reminder))
+        } else {
+            (None, Self(reminder))
+        }
     }
 
     fn locale_en(&self, accuracy: Accuracy) -> String {
