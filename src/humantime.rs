@@ -49,6 +49,9 @@ const S_YEAR: i64 = S_DAY * 365;
 #[derive(Clone, Copy, Debug)]
 enum TimePeriod {
     Now,
+    Nanos(i64),
+    Micros(i64),
+    Millis(i64),
     Seconds(i64),
     Minutes(i64),
     Hours(i64),
@@ -63,6 +66,9 @@ impl TimePeriod {
     fn to_text_precise(self) -> Cow<'static, str> {
         match self {
             Self::Now => "now".into(),
+            Self::Nanos(n) => format!("{} ns", n).into(),
+            Self::Micros(n) => format!("{} µs", n).into(),
+            Self::Millis(n) => format!("{} ms", n).into(),
             Self::Seconds(1) => "1 second".into(),
             Self::Seconds(n) => format!("{} seconds", n).into(),
             Self::Minutes(1) => "1 minute".into(),
@@ -84,6 +90,9 @@ impl TimePeriod {
     fn to_text_rough(self) -> Cow<'static, str> {
         match self {
             Self::Now => "now".into(),
+            Self::Nanos(n) => format!("{} ns", n).into(),
+            Self::Micros(n) => format!("{} µs", n).into(),
+            Self::Millis(n) => format!("{} ms", n).into(),
             Self::Seconds(n) => format!("{} seconds", n).into(),
             Self::Minutes(1) => "a minute".into(),
             Self::Minutes(n) => format!("{} minutes", n).into(),
@@ -109,12 +118,19 @@ impl TimePeriod {
     }
 }
 
+/// `Duration` wrapper that helps expressing the duration in human languages
 #[derive(Clone, Copy, Debug, PartialEq, PartialOrd)]
 pub struct HumanTime(Duration);
 
 impl HumanTime {
     const DAYS_IN_YEAR: i64 = 365;
     const DAYS_IN_MONTH: i64 = 30;
+
+    /// Create `HumanTime` object that corresponds to the current point in time.
+    ///. Similar to `chrono::Utc::now()`
+    pub fn now() -> Self {
+        Self(Duration::zero())
+    }
 
     /// Gives English text representation of the `HumanTime` with given `accuracy` and 'tense`
     #[must_use]
@@ -206,17 +222,31 @@ impl HumanTime {
             periods.push(TimePeriod::Minutes(minutes));
         }
 
-        let (seconds, _reminder) = reminder.split_seconds();
+        let (seconds, reminder) = reminder.split_seconds();
         if let Some(seconds) = seconds {
             periods.push(TimePeriod::Seconds(seconds));
-        } else if periods.is_empty() {
-            periods.push(TimePeriod::Seconds(0));
         }
 
-        // let millis = reminder.0.num_milliseconds();
-        // if millis > 0 || periods.is_empty() {
-        //     periods.push(TimePeriod::Millis(millis))
-        // }
+        let (millis, reminder) = reminder.split_milliseconds();
+        if let Some(millis) = millis {
+            periods.push(TimePeriod::Millis(millis));
+        }
+
+        let (micros, reminder) = reminder.split_microseconds();
+        if let Some(micros) = micros {
+            periods.push(TimePeriod::Micros(micros));
+        }
+
+        let (nanos, reminder) = reminder.split_nanoseconds();
+        if let Some(nanos) = nanos {
+            periods.push(TimePeriod::Nanos(nanos));
+        }
+
+        debug_assert!(reminder.is_zero());
+
+        if periods.is_empty() {
+            periods.push(TimePeriod::Seconds(0));
+        }
 
         periods
     }
@@ -225,84 +255,85 @@ impl HumanTime {
     fn split_years(self) -> (Option<i64>, Self) {
         let years = self.0.num_days() / Self::DAYS_IN_YEAR;
         let reminder = self.0 - Duration::days(years * Self::DAYS_IN_YEAR);
-        let years = years.abs();
-        if years > 0 {
-            (Some(years), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(years, reminder)
     }
 
     /// Split this `HumanTime` into number of whole months and the reminder
     fn split_months(self) -> (Option<i64>, Self) {
         let months = self.0.num_days() / Self::DAYS_IN_MONTH;
         let reminder = self.0 - Duration::days(months * Self::DAYS_IN_MONTH);
-        let months = months.abs();
-        if months > 0 {
-            (Some(months), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(months, reminder)
     }
 
     /// Split this `HumanTime` into number of whole weeks and the reminder
     fn split_weeks(self) -> (Option<i64>, Self) {
         let weeks = self.0.num_weeks();
         let reminder = self.0 - Duration::weeks(weeks);
-        let weeks = weeks.abs();
-        if weeks > 0 {
-            (Some(weeks), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(weeks, reminder)
     }
 
     /// Split this `HumanTime` into number of whole days and the reminder
     fn split_days(self) -> (Option<i64>, Self) {
         let days = self.0.num_days();
         let reminder = self.0 - Duration::days(days);
-        let days = days.abs();
-        if days > 0 {
-            (Some(days), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(days, reminder)
     }
 
     /// Split this `HumanTime` into number of whole hours and the reminder
     fn split_hours(self) -> (Option<i64>, Self) {
         let hours = self.0.num_hours();
         let reminder = self.0 - Duration::hours(hours);
-        let hours = hours.abs();
-        if hours > 0 {
-            (Some(hours), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(hours, reminder)
     }
 
     /// Split this `HumanTime` into number of whole minutes and the reminder
     fn split_minutes(self) -> (Option<i64>, Self) {
         let minutes = self.0.num_minutes();
         let reminder = self.0 - Duration::minutes(minutes);
-        let minutes = minutes.abs();
-        if minutes > 0 {
-            (Some(minutes), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(minutes, reminder)
     }
 
     /// Split this `HumanTime` into number of whole seconds and the reminder
     fn split_seconds(self) -> (Option<i64>, Self) {
         let seconds = self.0.num_seconds();
         let reminder = self.0 - Duration::seconds(seconds);
-        let seconds = seconds.abs();
-        if seconds > 0 {
-            (Some(seconds), Self(reminder))
-        } else {
-            (None, Self(reminder))
-        }
+        Self::normalize_split(seconds, reminder)
+    }
+
+    /// Split this `HumanTime` into number of whole milliseconds and the reminder
+    fn split_milliseconds(self) -> (Option<i64>, Self) {
+        let millis = self.0.num_milliseconds();
+        let reminder = self.0 - Duration::milliseconds(millis);
+        Self::normalize_split(millis, reminder)
+    }
+
+    /// Split this `HumanTime` into number of whole seconds and the reminder
+    fn split_microseconds(self) -> (Option<i64>, Self) {
+        let micros = self.0.num_microseconds().unwrap_or_default();
+        let reminder = self.0 - Duration::microseconds(micros);
+        Self::normalize_split(micros, reminder)
+    }
+
+    /// Split this `HumanTime` into number of whole seconds and the reminder
+    fn split_nanoseconds(self) -> (Option<i64>, Self) {
+        let nanos = self.0.num_nanoseconds().unwrap_or_default();
+        let reminder = self.0 - Duration::nanoseconds(nanos);
+        Self::normalize_split(nanos, reminder)
+    }
+
+    fn normalize_split(wholes: impl Into<Option<i64>>, reminder: Duration) -> (Option<i64>, Self) {
+        let wholes = wholes.into().map(|x| x.abs()).filter(|x| *x > 0);
+        (wholes, Self(reminder))
+        //    let wholes = wholes.into().map(|x| x.abs()).filter(|x| x != 0);
+        //     if wholes > 0 {
+        //         (Some(wholes), Self(reminder))
+        //     } else {
+        //         (None, Self(reminder))
+        //     }
+    }
+
+    pub fn is_zero(self) -> bool {
+        self.0.is_zero()
     }
 
     fn locale_en(&self, accuracy: Accuracy) -> String {

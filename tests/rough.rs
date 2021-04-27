@@ -5,7 +5,7 @@ mod duration {
 
     #[test]
     fn now() {
-        let ht = HumanTime::from(Duration::zero());
+        let ht = HumanTime::now();
         let english = format!("{}", ht);
         assert_eq!("now", english);
     }
