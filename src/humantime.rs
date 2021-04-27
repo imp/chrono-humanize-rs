@@ -322,14 +322,8 @@ impl HumanTime {
     }
 
     fn normalize_split(wholes: impl Into<Option<i64>>, reminder: Duration) -> (Option<i64>, Self) {
-        let wholes = wholes.into().map(|x| x.abs()).filter(|x| *x > 0);
+        let wholes = wholes.into().map(i64::abs).filter(|x| *x > 0);
         (wholes, Self(reminder))
-        //    let wholes = wholes.into().map(|x| x.abs()).filter(|x| x != 0);
-        //     if wholes > 0 {
-        //         (Some(wholes), Self(reminder))
-        //     } else {
-        //         (None, Self(reminder))
-        //     }
     }
 
     pub fn is_zero(self) -> bool {
