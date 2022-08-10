@@ -11,6 +11,20 @@ mod duration {
     }
 
     #[test]
+    fn plus_1ms() {
+        let ht = HumanTime::from(Duration::milliseconds(1));
+        let english = format!("{:#}", ht);
+        assert_eq!("in 1 ms", english);
+    }
+
+    #[test]
+    fn minus_1ms() {
+        let ht = HumanTime::from(Duration::milliseconds(-1));
+        let english = format!("{:#}", ht);
+        assert_eq!("1 ms ago", english);
+    }
+
+    #[test]
     fn plus_1s() {
         let ht = HumanTime::from(Duration::seconds(1));
         let english = format!("{:#}", ht);
