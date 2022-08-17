@@ -159,7 +159,7 @@ impl HumanTime {
     }
 
     fn tense(self, accuracy: Accuracy) -> Tense {
-        if accuracy.is_rough() && (-10..=10).contains(&self.0.num_seconds()) {
+        if accuracy.is_rough() && self.0.num_seconds().abs() < 11 {
             Tense::Present
         } else if self.0 > Duration::zero() {
             Tense::Future
